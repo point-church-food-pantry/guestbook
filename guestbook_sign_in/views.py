@@ -19,10 +19,10 @@ def index(request):
     '''
     Landing page for guestbook_sign_in app
     '''
-    '''
-    from .support_functions import upload_guests_and_sign_ins
-    upload_guests_and_sign_ins()
-    '''
+    
+    #from .support_functions import upload_guests_and_sign_ins
+    #upload_guests_and_sign_ins()
+    
     return render(request, 'index.html')
 
 def create_new_guest(request, language):
@@ -296,8 +296,12 @@ def generate_report_file(request, file_type):
         c = canvas.Canvas(buffer, pagesize = letter)
         
         for guest in guests.itertuples():
-            guest_sign_ins = sign_ins[(sign_ins['internal_ID_id'] == guest.internal_ID) & (sign_ins['tefap_eligible'] == 'Yes')].fillna(value = '')
-                        
+            
+            if len(sign_ins) > 0:
+                guest_sign_ins = sign_ins[(sign_ins['internal_ID_id'] == guest.internal_ID) & (sign_ins['tefap_eligible'] == 'Yes')].fillna(value = '')
+            else:
+                guest_sign_ins = pd.DataFrame(None)
+                
             if guest.language_preference == 'English':
                 
                 front_image = finders.find('guestbook_sign_in/tefap_images/english_front.png')
@@ -310,8 +314,9 @@ def generate_report_file(request, file_type):
                 c.drawString(3.5*72.0, 9.12*72.0, f"{guest.number_in_household}")
                 c.drawString(3.5*72.0, 3.53*72.0, f"{guest.authorized_representative_1}")
                 c.drawString(3.5*72.0, 3.15*72.0, f"{guest.authorized_representative_2}")
-                front_signature = draw_signature(json.loads(guest.tefap_signature.replace("'",'"')), as_file = True)
-                c.drawImage(front_signature, x = 1.0*72.0, y = 2.78*72.0, width = 2.0*72.0, height = 0.5*72.0, mask = 'auto')
+                if guest.tefap_signature != None:
+                    front_signature = draw_signature(json.loads(guest.tefap_signature.replace("'",'"')), as_file = True)
+                    c.drawImage(front_signature, x = 1.0*72.0, y = 2.78*72.0, width = 2.0*72.0, height = 0.5*72.0, mask = 'auto')
                 c.drawString(3.2*72.0, 2.78*72.0, f"{guest.tefap_signature_date}")
                 c.setFont(psfontname = 'Courier', size = 30.0)
                 c.drawString(6.0*72.0, 0.7*72.0, f"{guest.guest_ID}")    
@@ -324,15 +329,17 @@ def generate_report_file(request, file_type):
                 for week in guest_sign_ins.itertuples():
                     w = index % 24                        
                     c.drawString(0.97*72.0, 8.95*72.0 - w*0.3427*72.0, f"{week.date}")
-                    client_signature = draw_signature(json.loads(week.signature.replace("'",'"')), as_file = True)
-                    c.drawImage(client_signature, x = 1.4*72.0, y = 8.95*72.0 - w*0.3427*72.0, width = 1.0*72.0, height = 0.2*72.0, mask = 'auto')
+                    if week.agency_representative_signature != None:
+                        client_signature = draw_signature(json.loads(week.signature.replace("'",'"')), as_file = True)
+                        c.drawImage(client_signature, x = 1.4*72.0, y = 8.95*72.0 - w*0.3427*72.0, width = 1.0*72.0, height = 0.2*72.0, mask = 'auto')
                     c.drawString(3.34*72.0, 8.95*72.0 - w*0.3427*72.0, f"{'X' if week.fns == 'Yes' else ''}")
                     c.drawString(3.72*72.0, 8.95*72.0 - w*0.3427*72.0, f"{'X' if week.fns == 'No' else ''}")
                     c.drawString(4.0*72.0, 8.95*72.0 - w*0.3427*72.0, f"${week.yearly_income}")
                     c.drawString(5.0*72.0, 8.95*72.0 - w*0.3427*72.0, f"${week.monthly_income}")
                     c.drawString(5.86*72.0, 8.95*72.0 - w*0.3427*72.0, f"${week.weekly_income}")
-                    agency_representative_signature = draw_signature(json.loads(week.agency_representative_signature.replace("'",'"')), as_file = True)
-                    c.drawImage(agency_representative_signature, x = 6.3*72.0, y = 8.95*72.0 - w*0.3427*72.0, width = 1.0*72.0, height = 0.2*72.0, mask = 'auto')
+                    if week.agency_representative_signature != None:
+                        agency_representative_signature = draw_signature(json.loads(week.agency_representative_signature.replace("'",'"')), as_file = True)
+                        c.drawImage(agency_representative_signature, x = 6.3*72.0, y = 8.95*72.0 - w*0.3427*72.0, width = 1.0*72.0, height = 0.2*72.0, mask = 'auto')
                     if w == 23:
                         c.showPage()
                         c.setFont(psfontname = 'Courier', size = 11.0)
@@ -352,8 +359,9 @@ def generate_report_file(request, file_type):
                 c.drawString(3.0*72.0, 9.10*72.0, f"{guest.number_in_household}")
                 c.drawString(3.3*72.0, 3.3*72.0, f"{guest.authorized_representative_1}")
                 c.drawString(3.3*72.0, 2.95*72.0, f"{guest.authorized_representative_2}")                
-                front_signature = draw_signature(json.loads(guest.tefap_signature.replace("'",'"')), as_file = True)
-                c.drawImage(front_signature, x = 1.0*72.0, y = 2.6*72.0, width = 2.0*72.0, height = 0.5*72.0, mask = 'auto')
+                if guest.tefap_signature != None:
+                    front_signature = draw_signature(json.loads(guest.tefap_signature.replace("'",'"')), as_file = True)
+                    c.drawImage(front_signature, x = 1.0*72.0, y = 2.6*72.0, width = 2.0*72.0, height = 0.5*72.0, mask = 'auto')
                 c.drawString(3.2*72.0, 2.6*72.0, f"{guest.tefap_signature_date}")
                 c.setFont(psfontname = 'Courier', size = 30.0)
                 c.drawString(6.0*72.0, 0.7*72.0, f"{guest.guest_ID}")    
@@ -366,15 +374,17 @@ def generate_report_file(request, file_type):
                 for week in guest_sign_ins.itertuples():
                     w = index % 24                        
                     c.drawString(0.87*72.0, 8.58*72.0 - w*0.3427*72.0, f"{week.date}")
-                    client_signature = draw_signature(json.loads(week.signature.replace("'",'"')), as_file = True)
-                    c.drawImage(client_signature, x = 1.4*72.0, y = 8.58*72.0 - w*0.3427*72.0, width = 1.0*72.0, height = 0.2*72.0, mask = 'auto')
+                    if week.signature != None:
+                        client_signature = draw_signature(json.loads(week.signature.replace("'",'"')), as_file = True)
+                        c.drawImage(client_signature, x = 1.4*72.0, y = 8.58*72.0 - w*0.3427*72.0, width = 1.0*72.0, height = 0.2*72.0, mask = 'auto')
                     c.drawString(3.2*72.0, 8.58*72.0 - w*0.3427*72.0, f"{'X' if week.fns == 'Yes' else ''}")
                     c.drawString(3.58*72.0, 8.58*72.0 - w*0.3427*72.0, f"{'X' if week.fns == 'No' else ''}")
                     c.drawString(3.85*72.0, 8.58*72.0 - w*0.3427*72.0, f"${week.yearly_income}")
                     c.drawString(4.85*72.0, 8.58*72.0 - w*0.3427*72.0, f"${week.monthly_income}")
                     c.drawString(5.67*72.0, 8.58*72.0 - w*0.3427*72.0, f"${week.weekly_income}")
-                    agency_representative_signature = draw_signature(json.loads(week.agency_representative_signature.replace("'",'"')), as_file = True)
-                    c.drawImage(agency_representative_signature, x = 6.3*72.0, y = 8.58*72.0 - w*0.3427*72.0, width = 1.0*72.0, height = 0.2*72.0, mask = 'auto')
+                    if week.agency_representative_signature != None:
+                        agency_representative_signature = draw_signature(json.loads(week.agency_representative_signature.replace("'",'"')), as_file = True)
+                        c.drawImage(agency_representative_signature, x = 6.3*72.0, y = 8.58*72.0 - w*0.3427*72.0, width = 1.0*72.0, height = 0.2*72.0, mask = 'auto')
                     if w == 23:
                         c.showPage()
                         c.setFont(psfontname = 'Courier', size = 11.0)
