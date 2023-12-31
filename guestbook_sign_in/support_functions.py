@@ -1,16 +1,18 @@
 from .models import Guest, SignIn
 import pandas as pd
 from tkinter import filedialog
+import numpy as np
 
 def upload_guests_and_sign_ins():
     
     filepath = filedialog.askopenfilename(title="Select database file to upload")
-    guests = pd.read_excel(filepath, sheet_name = 'guests')
-    sign_ins = pd.read_excel(filepath, sheet_name = 'sign_ins')
+    guests = pd.read_excel(filepath, sheet_name = 'guests').replace(np.nan, None)
+    sign_ins = pd.read_excel(filepath, sheet_name = 'sign_ins').replace(np.nan, None)
     
     for guest in guests.itertuples():
         
-        new_guest = Guest(guest_ID = guest.guest_ID,
+        new_guest = Guest(internal_ID = guest.internal_ID,
+                          guest_ID = guest.guest_ID,
                           active = guest.active,
                           first_name = guest.first_name,
                           last_name = guest.last_name,
