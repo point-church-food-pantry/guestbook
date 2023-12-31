@@ -314,7 +314,7 @@ def generate_report_file(request, file_type):
                 c.drawString(3.5*72.0, 9.12*72.0, f"{guest.number_in_household}")
                 c.drawString(3.5*72.0, 3.53*72.0, f"{guest.authorized_representative_1}")
                 c.drawString(3.5*72.0, 3.15*72.0, f"{guest.authorized_representative_2}")
-                if guest.tefap_signature != None:
+                if guest.tefap_signature not in [None, '']:
                     front_signature = draw_signature(json.loads(guest.tefap_signature.replace("'",'"')), as_file = True)
                     c.drawImage(front_signature, x = 1.0*72.0, y = 2.78*72.0, width = 2.0*72.0, height = 0.5*72.0, mask = 'auto')
                 c.drawString(3.2*72.0, 2.78*72.0, f"{guest.tefap_signature_date}")
@@ -329,7 +329,7 @@ def generate_report_file(request, file_type):
                 for week in guest_sign_ins.itertuples():
                     w = index % 24                        
                     c.drawString(0.97*72.0, 8.95*72.0 - w*0.3427*72.0, f"{week.date}")
-                    if week.agency_representative_signature != None:
+                    if week.signature not in [None, '']:
                         client_signature = draw_signature(json.loads(week.signature.replace("'",'"')), as_file = True)
                         c.drawImage(client_signature, x = 1.4*72.0, y = 8.95*72.0 - w*0.3427*72.0, width = 1.0*72.0, height = 0.2*72.0, mask = 'auto')
                     c.drawString(3.34*72.0, 8.95*72.0 - w*0.3427*72.0, f"{'X' if week.fns == 'Yes' else ''}")
@@ -337,7 +337,7 @@ def generate_report_file(request, file_type):
                     c.drawString(4.0*72.0, 8.95*72.0 - w*0.3427*72.0, f"${week.yearly_income}")
                     c.drawString(5.0*72.0, 8.95*72.0 - w*0.3427*72.0, f"${week.monthly_income}")
                     c.drawString(5.86*72.0, 8.95*72.0 - w*0.3427*72.0, f"${week.weekly_income}")
-                    if week.agency_representative_signature != None:
+                    if week.agency_representative_signature not in [None, '']:
                         agency_representative_signature = draw_signature(json.loads(week.agency_representative_signature.replace("'",'"')), as_file = True)
                         c.drawImage(agency_representative_signature, x = 6.3*72.0, y = 8.95*72.0 - w*0.3427*72.0, width = 1.0*72.0, height = 0.2*72.0, mask = 'auto')
                     if w == 23:
@@ -359,7 +359,7 @@ def generate_report_file(request, file_type):
                 c.drawString(3.0*72.0, 9.10*72.0, f"{guest.number_in_household}")
                 c.drawString(3.3*72.0, 3.3*72.0, f"{guest.authorized_representative_1}")
                 c.drawString(3.3*72.0, 2.95*72.0, f"{guest.authorized_representative_2}")                
-                if guest.tefap_signature != None:
+                if guest.tefap_signature not in [None, '']:
                     front_signature = draw_signature(json.loads(guest.tefap_signature.replace("'",'"')), as_file = True)
                     c.drawImage(front_signature, x = 1.0*72.0, y = 2.6*72.0, width = 2.0*72.0, height = 0.5*72.0, mask = 'auto')
                 c.drawString(3.2*72.0, 2.6*72.0, f"{guest.tefap_signature_date}")
@@ -374,7 +374,7 @@ def generate_report_file(request, file_type):
                 for week in guest_sign_ins.itertuples():
                     w = index % 24                        
                     c.drawString(0.87*72.0, 8.58*72.0 - w*0.3427*72.0, f"{week.date}")
-                    if week.signature != None:
+                    if week.signature not in [None, '']:
                         client_signature = draw_signature(json.loads(week.signature.replace("'",'"')), as_file = True)
                         c.drawImage(client_signature, x = 1.4*72.0, y = 8.58*72.0 - w*0.3427*72.0, width = 1.0*72.0, height = 0.2*72.0, mask = 'auto')
                     c.drawString(3.2*72.0, 8.58*72.0 - w*0.3427*72.0, f"{'X' if week.fns == 'Yes' else ''}")
@@ -382,7 +382,7 @@ def generate_report_file(request, file_type):
                     c.drawString(3.85*72.0, 8.58*72.0 - w*0.3427*72.0, f"${week.yearly_income}")
                     c.drawString(4.85*72.0, 8.58*72.0 - w*0.3427*72.0, f"${week.monthly_income}")
                     c.drawString(5.67*72.0, 8.58*72.0 - w*0.3427*72.0, f"${week.weekly_income}")
-                    if week.agency_representative_signature != None:
+                    if week.agency_representative_signature not in [None, '']:
                         agency_representative_signature = draw_signature(json.loads(week.agency_representative_signature.replace("'",'"')), as_file = True)
                         c.drawImage(agency_representative_signature, x = 6.3*72.0, y = 8.58*72.0 - w*0.3427*72.0, width = 1.0*72.0, height = 0.2*72.0, mask = 'auto')
                     if w == 23:
