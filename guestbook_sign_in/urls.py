@@ -12,6 +12,7 @@ urlpatterns = [
     path('sign_out', views.sign_out, name = 'sign_out'),
     path('generate_report', views.generate_report, name = 'generate_report'),
     path('generate_report/<file_type>', views.generate_report_file, name = 'generate_report_file'),
+    path('generate_proxy_form/<guest_ID>', views.generate_proxy_form, name = 'generate_proxy_form'),
 ]
 
 if settings.DEBUG == True:

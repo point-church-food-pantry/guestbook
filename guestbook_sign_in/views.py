@@ -1,3 +1,5 @@
+### Module Imports ###
+
 from django.shortcuts import render
 from django.contrib.staticfiles import finders
 from django.http import HttpResponseRedirect, FileResponse
@@ -13,16 +15,12 @@ from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
 from jsignature.utils import draw_signature
 
-# Create your views here.
+### Views ###
 
 def index(request):
     '''
     Landing page for guestbook_sign_in app
-    '''
-    
-    #from .support_functions import upload_guests_and_sign_ins
-    #upload_guests_and_sign_ins()
-    
+    '''   
     return render(request, 'index.html')
 
 def create_new_guest(request, language):
@@ -33,13 +31,29 @@ def create_new_guest(request, language):
         
         form = GuestInput(request.POST)
         if form.is_valid():
-                
+            
+            # Sanity check to ensure someone doesn't create the same guest twice.
+            # If the submission is a duplicate, looks up the guest ID of the match and takes you to their sign-in page.
+            # Designed for the use case of "someone hit the back arrow from the weekly sign-in page after creating a new guest."
+            existing_guests_match = list(Guest.objects.filter(first_name = form.cleaned_data['first_name'],
+                                                         last_name = form.cleaned_data['last_name'],
+                                                         tefap_signature_date = date.today()).values())
+
+            if len(existing_guests_match) > 0:
+                guest_id = existing_guests_match[0]['guest_ID']
+                return HttpResponseRedirect(reverse('weekly_signatures', args = (language, guest_id)))    
+            
+            # If the "return" statement above isn't thrown, we assume the guest is not a duplicate. 
+            # Create a new guest ID if one is not provided manually. 
+            # The manual guest ID should be used with caution, we currently do not have checks to ensure no duplicates.
+            
             if form.cleaned_data['guest_ID'] == None:
                 if len(Guest.objects.values_list('guest_ID', flat = True)) == 0: guest_id = 1
                 else: guest_id = max(Guest.objects.values_list('guest_ID', flat = True)) + 1
             else:
                 guest_id = form.cleaned_data['guest_ID']
-                
+            
+            # Add new guest to database
             new_guest = Guest(guest_ID = guest_id,
                               active = 'Active',
                               first_name = form.cleaned_data['first_name'],
@@ -47,6 +61,8 @@ def create_new_guest(request, language):
                               address = form.cleaned_data['address'],
                               city = form.cleaned_data['city'],
                               county = form.cleaned_data['county'],
+                              phone = form.cleaned_data['phone'],
+                              email = form.cleaned_data['email'],
                               number_in_household = form.cleaned_data['number_in_household'],
                               authorized_representative_1 = form.cleaned_data['authorized_representative_1'],
                               authorized_representative_2 = form.cleaned_data['authorized_representative_2'],
@@ -54,7 +70,6 @@ def create_new_guest(request, language):
                               tefap_signature = form.cleaned_data['tefap_signature'],
                               language_preference = language) 
             new_guest.save()
-
             return HttpResponseRedirect(reverse('weekly_signatures', args = (language, guest_id)))
     else:
         form = GuestInput()
@@ -77,7 +92,6 @@ def weekly_signatures(request, language, guest_ID):
     '''
     # Need to implement some kind of check for duplicate guest IDs.
     guest = Guest.objects.get(guest_ID = guest_ID)
-    print(guest.authorized_representative_2)
     
     pickup_choices = [(f'{guest.first_name} {guest.last_name}', f'{guest.first_name} {guest.last_name}')]
     if guest.authorized_representative_1 not in ['', None]:
@@ -94,8 +108,18 @@ def weekly_signatures(request, language, guest_ID):
     if request.method == 'POST':
         form = SignInInput(request.POST)
         form.fields['who_performed_pickup'].choices = pickup_choices
-        
+
         if form.is_valid():
+            
+            # Sanity check to ensure someone doesn't sign in the same guest twice. 
+            # No one with the same {internal_ID_id} should sign in twice in one day.
+            today_sign_ins_match = list(SignIn.objects.filter(date = date.today(), 
+                                                              internal_ID_id = guest.internal_ID).values())
+            if len(today_sign_ins_match) > 0:
+                eligible = today_sign_ins_match[0]['tefap_eligible']
+                return HttpResponseRedirect(reverse('submission_complete', kwargs = {'tefap_flag' : eligible}))
+            
+            # If the HTTPResponseRedirect above is not thrown, we assume the guest has not been signed in yet.
             
             if form.cleaned_data['number_in_household'] == None:
                 num_in_hh = guest.number_in_household
@@ -110,11 +134,11 @@ def weekly_signatures(request, language, guest_ID):
             fns = form.cleaned_data['fns']
             
             # Test for TEFAP eligibility
-            eligible = 0
+            eligible = 'No'
             
             # If food stamps = yes, automatically eligible for TEFAP
             if fns == 'Yes':
-                eligible = 1
+                eligible = 'Yes'
                 
             else:
                 income_table = pd.read_csv(finders.find('guestbook_sign_in/TEFAP_Income_Table.csv'))
@@ -128,21 +152,21 @@ def weekly_signatures(request, language, guest_ID):
                     else:
                         threshold = income_table[income_table['Household Size'] == hh_max]['Per Year'].iloc[0] + \
                             income_table[pd.isna(income_table['Household Size'])]['Per Year'].iloc[0] * (num_in_hh - hh_max)     
-                    if yi <= threshold: eligible = 1
+                    if yi <= threshold: eligible = 'Yes'
                 elif mi != None:
                     if num_in_hh <= hh_max:
                         threshold = income_table[income_table['Household Size'] == num_in_hh]['Per Month'].iloc[0]
                     else:
                         threshold = income_table[income_table['Household Size'] == hh_max]['Per Month'].iloc[0] + \
                             income_table[pd.isna(income_table['Household Size'])]['Per Month'].iloc[0] * (num_in_hh - hh_max)    
-                    if mi <= threshold: eligible = 1  
+                    if mi <= threshold: eligible = 'Yes'
                 else:
                     if num_in_hh <= hh_max:
                         threshold = income_table[income_table['Household Size'] == num_in_hh]['Per Week'].iloc[0]
                     else:
                         threshold = income_table[income_table['Household Size'] == hh_max]['Per Week'].iloc[0] + \
                             income_table[pd.isna(income_table['Household Size'])]['Per Week'].iloc[0] * (num_in_hh - hh_max)
-                    if wi <= threshold: eligible = 1              
+                    if wi <= threshold: eligible = 'Yes'              
 
             
             new_sign_in = SignIn(internal_ID = guest,
@@ -154,11 +178,11 @@ def weekly_signatures(request, language, guest_ID):
                                  yearly_income = yi,
                                  monthly_income = mi,
                                  weekly_income = wi,
-                                 tefap_eligible = 'Yes' if eligible == 1 else 'No',
+                                 tefap_eligible = eligible,
                                  agency_representative_signature = form.cleaned_data['agency_representative_signature'])
             new_sign_in.save()
 
-            return HttpResponseRedirect(reverse('submission_complete', args = (str(eligible))))
+            return HttpResponseRedirect(reverse('submission_complete', kwargs = {'tefap_flag' : eligible}))
         
     else:
         form = SignInInput()
@@ -176,7 +200,7 @@ def weekly_signatures(request, language, guest_ID):
     return render(request, html, context = context)
     
 def submission_complete(request, tefap_flag): 
-    if tefap_flag == '1':
+    if tefap_flag == 'Yes':
         flag_english = 'eligible'
         instructions_english = 'Please proceed through the line as normal.'
         flag_spanish = 'elegible'
@@ -395,9 +419,20 @@ def generate_report_file(request, file_type):
         c.save()        
         buffer.seek(0)
         return FileResponse(buffer, as_attachment = True, filename = f"TEFAP PDF {date.today()}.pdf")
-            
-            
-        
+
+
+from .support_functions import print_to_pdf        
+def generate_proxy_form(request, guest_ID):
+    '''
+    Generates a PDF of the TEFAP proxy form for the desired guest.
+    '''
+    guest = Guest.objects.filter(guest_ID = guest_ID).values()[0]
+    sign_in = SignIn.objects.filter(internal_ID_id = guest['internal_ID'], date = date.today()).values()[0]
+    for key, value in sign_in.items(): guest[key] = value 
+    pdf = print_to_pdf(guest)
+    return FileResponse(pdf, as_attachment = True, filename = f"Proxy Form - Guest {guest_ID}.pdf")
+    
+
     
     
     

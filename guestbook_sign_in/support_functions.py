@@ -1,54 +1,69 @@
-from .models import Guest, SignIn
+import io
 import pandas as pd
-from tkinter import filedialog
-import numpy as np
+from django.contrib.staticfiles import finders
+from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import letter
 
-def upload_guests_and_sign_ins():
+def print_to_pdf(params):
+    '''
+    Prints a single new guest's information to a TEFAP PDF (wrapped in a io.BytesIO object.)
+    Imports an image of the English or Spanish PDF, as appropriate, and superimposes text above it in the appropriate locations.
+    '''
+    buffer = io.BytesIO()
+    c = canvas.Canvas(buffer, pagesize = letter)
+    c.setFont(psfontname = 'Courier', size = 11.0)
     
-    filepath = filedialog.askopenfilename(title="Select database file to upload")
-    guests = pd.read_excel(filepath, sheet_name = 'guests').replace(np.nan, None)
-    sign_ins = pd.read_excel(filepath, sheet_name = 'sign_ins').replace(np.nan, None)
+    if params['language_preference'] == 'English':
+        filename = finders.find('guestbook_sign_in/tefap_images/english_auth_rep.png')
+        c.drawImage(filename, x = 0, y = 0, width = 8.5*72.0, height = 11.0*72.0)
+        c.drawString(4.5*72.0, 9.0*72.0, "Carolina Care Center")
+        c.drawString(2.5*72.0, 8.6*72.0, f"{params['first_name']} {params['last_name']}")
+        c.drawString(2.5*72.0, 8.2*72.0, f"Address: {params['address']}")
+        c.drawString(2.5*72.0, 8.0*72.0, f"City: {params['city']} | County: {params['county']}")
+        c.drawString(4.5*72.0, 7.7*72.0, f"{params['number_in_household']}")
+        c.drawString(3.22*72.0, 7.42*72.0, f"{'X' if params['fns'] == 'Yes' else ''}")
+        c.drawString(4.27*72.0, 7.42*72.0, f"{'X' if params['fns'] == 'No' else ''}")
+        if params['fns'] == 'No':
+            if pd.notna(params['monthly_income']):
+                income = f"{params['monthly_income']} (Monthly)"
+            elif pd.notna(params['yearly_income']):
+                income = f"{params['yearly_income']} (Annual)"
+            else:
+                income = f"{params['weekly_income']} (Weekly)"
+            c.drawString(3.5*72.0, 7.0*72.0, income)     
+        if pd.notna(params['authorized_representative_1']): c.drawString(2.5*72.0, 6.2*72.0, f"{params['authorized_representative_1']}")
+        if pd.notna(params['authorized_representative_2']): c.drawString(2.5*72.0, 5.8*72.0, f"{params['authorized_representative_2']}")
+        c.setFont(psfontname = 'Courier', size = 30.0)
+        c.drawString(6.0*72.0, 0.7*72.0, f"{params['guest_ID']}")      
+        c.save()
+    else:
+        filename = finders.find('guestbook_sign_in/tefap_images/spanish_auth_rep.png')
+        c.drawImage(filename, x = 0, y = 0, width = 8.5*72.0, height = 11.0*72.0)
+        c.drawString(5.8*72.0, 9.2*72.0, "Carolina Care Center")
+        c.drawString(2.5*72.0, 8.9*72.0, f"{params['first_name']} {params['last_name']}")
+        c.drawString(2.5*72.0, 8.6*72.0, f"Address: {params['address']} | City: {params['city']} | County: {params['county']}")
+        c.drawString(4.8*72.0, 8.3*72.0, f"{params['number_in_household_y']}")
+        c.drawString(5.3*72.0, 8.05*72.0, f"{'FNS: Yes/Si' if params['fns'] == 'Yes' else 'FNS: No'}")
+        if params['fns'] == 'No':
+            if pd.notna(params['monthly_income']):
+                income = f"{params['monthly_income']} (Monthly)"
+            elif pd.notna(params['yearly_income']):
+                income = f"{params['yearly_income']} (Annual)"
+            else:
+                income = f"{params['weekly_income']} (Weekly)"
+            c.drawString(3.5*72.0, 7.75*72.0, income) 
+        if pd.notna(params['authorized_representative_1']): c.drawString(3.5*72.0, 7.2*72.0, f"{params['authorized_representative_1']}")
+        if pd.notna(params['authorized_representative_2']): c.drawString(3.5*72.0, 6.9*72.0, f"{params['authorized_representative_2']}")
+        c.setFont(psfontname = 'Courier', size = 30.0)
+        c.drawString(6.0*72.0, 1.0*72.0, f"{params['guest_ID']}")      
+        c.save()        
     
-    for guest in guests.itertuples():
-        
-        new_guest = Guest(internal_ID = guest.internal_ID,
-                          guest_ID = guest.guest_ID,
-                          active = guest.active,
-                          first_name = guest.first_name,
-                          last_name = guest.last_name,
-                          address = guest.address,
-                          city = guest.city,
-                          county = guest.county,
-                          phone = guest.phone,
-                          email = guest.email,
-                          number_in_household = guest.number_in_household,
-                          authorized_representative_1 = guest.authorized_representative_1,
-                          authorized_representative_2 = guest.authorized_representative_2,
-                          authorized_representative_3 = guest.authorized_representative_3,
-                          authorized_representative_4 = guest.authorized_representative_4,
-                          authorized_representative_5 = guest.authorized_representative_5,
-                          tefap_signature_date = guest.tefap_signature_date,
-                          tefap_signature = guest.tefap_signature,
-                          language_preference = guest.language_preference)
-        new_guest.save()
-        
-    for sign_in in sign_ins.itertuples():
-
-            new_sign_in = SignIn(internal_ID_id = sign_in.internal_ID_id,
-                                 date = sign_in.date,
-                                 who_performed_pickup = sign_in.who_performed_pickup,
-                                 signature = sign_in.signature,
-                                 fns = sign_in.fns,
-                                 number_in_household = sign_in.number_in_household,
-                                 yearly_income = sign_in.yearly_income,
-                                 monthly_income = sign_in.monthly_income,
-                                 weekly_income = sign_in.weekly_income,
-                                 tefap_eligible = sign_in.tefap_eligible,
-                                 agency_representative_signature = sign_in.agency_representative_signature)
-            new_sign_in.save()
-
-
-
-
-
-
+    buffer.seek(0)
+    return buffer
+    
+    
+    
+    
+    
+    
+    
