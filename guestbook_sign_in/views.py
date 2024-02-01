@@ -117,7 +117,7 @@ def weekly_signatures(request, language, guest_ID):
                                                               internal_ID_id = guest.internal_ID).values())
             if len(today_sign_ins_match) > 0:
                 eligible = today_sign_ins_match[0]['tefap_eligible']
-                return HttpResponseRedirect(reverse('submission_complete', kwargs = {'tefap_flag' : eligible}))
+                return HttpResponseRedirect(reverse('submission_complete', kwargs = {'tefap_flag' : eligible, 'guest_ID' : guest_ID}))
             
             # If the HTTPResponseRedirect above is not thrown, we assume the guest has not been signed in yet.
             
@@ -182,7 +182,7 @@ def weekly_signatures(request, language, guest_ID):
                                  agency_representative_signature = form.cleaned_data['agency_representative_signature'])
             new_sign_in.save()
 
-            return HttpResponseRedirect(reverse('submission_complete', kwargs = {'tefap_flag' : eligible}))
+            return HttpResponseRedirect(reverse('submission_complete', kwargs = {'tefap_flag' : eligible, 'guest_ID' : guest_ID}))
         
     else:
         form = SignInInput()
@@ -199,7 +199,7 @@ def weekly_signatures(request, language, guest_ID):
     
     return render(request, html, context = context)
     
-def submission_complete(request, tefap_flag): 
+def submission_complete(request, tefap_flag, guest_ID): 
     if tefap_flag == 'Yes':
         flag_english = 'eligible'
         instructions_english = 'Please proceed through the line as normal.'
@@ -214,7 +214,8 @@ def submission_complete(request, tefap_flag):
     context = {'flag_english' : flag_english,
                'instructions_english' : instructions_english,
                'flag_spanish' : flag_spanish,
-               'instructions_spanish' : instructions_spanish}
+               'instructions_spanish' : instructions_spanish,
+               'guest_ID' : guest_ID}
     
     return render(request, 'submission_complete.html', context = context)
 
