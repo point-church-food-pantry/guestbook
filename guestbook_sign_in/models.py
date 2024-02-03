@@ -27,7 +27,7 @@ class Guest(models.Model):
     language_preference = models.CharField(max_length = 256, blank = True, null = True)
 
     def __str__(self):
-        return f"{self.guest_ID} - {self.first_name} {self.last_name}"
+        return f"{self.guest_ID} - {self.first_name} {self.last_name} ({self.internal_ID})"
 
 class SignIn(models.Model):
     '''
@@ -46,7 +46,7 @@ class SignIn(models.Model):
     agency_representative_signature = models.TextField(blank = True, null = True)
     
     def __str__(self):
-        return f"{self.internal_ID} {self.date}"
+        return f"{str(self.internal_ID).split("(")[0]} {self.date} ({self.id})"
 
 
 
