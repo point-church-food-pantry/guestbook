@@ -21,7 +21,7 @@ def print_to_pdf(params):
         c.drawString(2.5*72.0, 8.2*72.0, f"Address: {params['address']}")
         c.drawString(2.5*72.0, 8.0*72.0, f"City: {params['city']} | County: {params['county']}")
         c.drawString(4.5*72.0, 7.7*72.0, f"{params['number_in_household']}")
-        c.drawString(3.22*72.0, 7.42*72.0, f"{'X' if params['fns'] == 'Yes' else ''}")
+        c.drawString(3.4*72.0, 7.42*72.0, f"{'X' if params['fns'] == 'Yes' else ''}")
         c.drawString(4.27*72.0, 7.42*72.0, f"{'X' if params['fns'] == 'No' else ''}")
         if params['fns'] == 'No':
             if pd.notna(params['monthly_income']):
@@ -42,7 +42,7 @@ def print_to_pdf(params):
         c.drawString(5.8*72.0, 9.2*72.0, "Carolina Care Center")
         c.drawString(2.5*72.0, 8.9*72.0, f"{params['first_name']} {params['last_name']}")
         c.drawString(2.5*72.0, 8.6*72.0, f"Address: {params['address']} | City: {params['city']} | County: {params['county']}")
-        c.drawString(4.8*72.0, 8.3*72.0, f"{params['number_in_household_y']}")
+        c.drawString(4.8*72.0, 8.3*72.0, f"{params['number_in_household']}")
         c.drawString(5.3*72.0, 8.05*72.0, f"{'FNS: Yes/Si' if params['fns'] == 'Yes' else 'FNS: No'}")
         if params['fns'] == 'No':
             if pd.notna(params['monthly_income']):
