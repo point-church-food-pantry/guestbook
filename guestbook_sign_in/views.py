@@ -185,7 +185,7 @@ def weekly_signatures(request, language, guest_ID):
             return HttpResponseRedirect(reverse('submission_complete', kwargs = {'tefap_flag' : eligible, 'guest_ID' : guest_ID}))
         
     else:
-        form = SignInInput()
+        form = SignInInput(initial = {'previously_reported_number_in_household' : guest.number_in_household})
         form.fields['who_performed_pickup'].choices = pickup_choices
         
     context = {'form' : form,
