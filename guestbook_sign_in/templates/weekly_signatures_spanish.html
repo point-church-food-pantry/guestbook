@@ -69,7 +69,26 @@
                 </tr>
             </tbody>
         </table>
+
+        <div style="display: none;">
+            {{ form.previously_reported_number_in_household }}
+        </div>
+
         <input type="submit" value="Enviar">
         </form>
+        <!-- Provisional ChatGPT code. If there is an error, check here first! -->
+        {% if form.errors %}
+        <script>
+            // Display error messages as alerts
+            {% for field, errors in form.errors.items %}
+                {% for error in errors %}
+                    alert("{{ error }}");
+                {% endfor %}
+            {% endfor %}
+        </script>
+        {% endif %}
+        <!-- End of provisional code. -->
     </body>
 </html>
+
+
