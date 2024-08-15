@@ -2,6 +2,7 @@
 
 from django.shortcuts import render
 from django.contrib.staticfiles import finders
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect, FileResponse
 from django.urls import reverse
 from .models import Guest, SignIn
@@ -14,15 +15,22 @@ import json
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
 from jsignature.utils import draw_signature
+from .support_functions import print_to_pdf
 
 ### Views ###
 
+from django.contrib.auth.forms import AuthenticationForm
+class Login(AuthenticationForm):
+    pass
+
+@login_required
 def index(request):
     '''
     Landing page for guestbook_sign_in app
     '''   
     return render(request, 'index.html')
 
+@login_required
 def create_new_guest(request, language):
     '''
     Generate TEFAP form for new guests.
@@ -86,6 +94,7 @@ def create_new_guest(request, language):
     
     return render(request, html, context = context)
 
+@login_required
 def weekly_signatures(request, language, guest_ID):
     '''
     Equivalent to signing the back of a TEFAP form.
@@ -198,7 +207,8 @@ def weekly_signatures(request, language, guest_ID):
         html = 'weekly_signatures_spanish.html'
     
     return render(request, html, context = context)
-    
+
+@login_required    
 def submission_complete(request, tefap_flag, guest_ID): 
     if tefap_flag == 'Yes':
         flag_english = 'eligible'
@@ -219,6 +229,7 @@ def submission_complete(request, tefap_flag, guest_ID):
     
     return render(request, 'submission_complete.html', context = context)
 
+@login_required
 def sign_in(request):
     '''
     Sign in an existing guest.
@@ -258,6 +269,7 @@ def sign_in(request):
                    'guests' : Guest.objects.exclude(internal_ID__in = already_signed_in).values()}
     return render(request, 'sign_in.html', context = context)
 
+@login_required
 def sign_out(request):
     '''
     Sign out a guest that was checked in within the last day.
@@ -301,6 +313,7 @@ def generate_report(request):
         
     return render(request, 'generate_report.html', context = context)
 
+@login_required
 def generate_report_file(request, file_type):
     
     guests = pd.DataFrame(Guest.objects.values())
@@ -421,8 +434,7 @@ def generate_report_file(request, file_type):
         buffer.seek(0)
         return FileResponse(buffer, as_attachment = True, filename = f"TEFAP PDF {date.today()}.pdf")
 
-
-from .support_functions import print_to_pdf        
+@login_required        
 def generate_proxy_form(request, guest_ID):
     '''
     Generates a PDF of the TEFAP proxy form for the desired guest.
