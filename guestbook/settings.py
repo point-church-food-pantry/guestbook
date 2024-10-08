@@ -38,6 +38,11 @@ INSTALLED_APPS = [
     "guestbook_sign_in.apps.GuestbookSignInConfig",
     "jsignature",
     'django_static_jquery',
+    
+    # Required by allauth
+    'allauth',
+    'allauth.account',
+    'allauth.mfa',
 ]
 
 MIDDLEWARE = [
@@ -48,6 +53,9 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    
+    # Required by allauth
+    "allauth.account.middleware.AccountMiddleware",
 ]
 
 ROOT_URLCONF = "guestbook.urls"
@@ -81,7 +89,6 @@ DATABASES = {
     }
 }
 
-
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 
@@ -99,6 +106,14 @@ AUTH_PASSWORD_VALIDATORS = [
         "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
     },
 ]
+
+# Required by allauth
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
+
+ACCOUNT_SESSION_REMEMBER = False
 
 
 # Internationalization
