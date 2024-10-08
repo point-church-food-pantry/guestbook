@@ -19,10 +19,6 @@ from .support_functions import print_to_pdf
 
 ### Views ###
 
-from django.contrib.auth.forms import AuthenticationForm
-class Login(AuthenticationForm):
-    pass
-
 @login_required
 def index(request):
     '''
