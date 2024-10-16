@@ -1,0 +1,296 @@
+/* General reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Body styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    display: flex;
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    min-height: 100vh; /* Full viewport height */
+    padding: 20px;
+    padding-top: 120px; /* Adjust this value based on your navbar height */
+    font-size: 14px;
+}
+
+/* Navigation bar */
+.nav-bar {
+    width: 100%; /* Full width */
+    background-color: #333; /* Dark background color */
+    color: white; /* Text color */
+    padding: 10px 20px; /* Padding for the nav bar */
+    display: flex; /* Flexbox for layout */
+    justify-content: space-between; /* Space between buttons */
+    align-items: center; /* Center items vertically */
+    position: fixed; 
+    top: 0; /* Align at the top */
+    left: 0; /* Align at the left */
+    z-index: 1000; /* Ensure it's above other content */
+}
+
+/* Navigation buttons */
+.nav-button {
+    background-color: #555; /* Button background color */
+    color: white; /* Button text color */
+    border: none; /* Remove border */
+    border-radius: 5px; /* Rounded corners */
+    padding: 10px 15px; /* Padding for buttons */
+    cursor: pointer; /* Pointer cursor */
+    font-size: 16px; /* Button font size */
+    transition: background-color 0.3s ease; /* Transition for hover effect */
+}
+
+.nav-button:hover {
+    background-color: #777; /* Darker on hover */
+}
+
+/* Tile container */
+.tile-container {
+    display: flex;
+    flex-wrap: wrap; /* Allow tiles to wrap to the next line */
+    justify-content: center; /* Center tiles within the container */
+    gap: 20px; /* Space between tiles */
+    padding: 20px;
+    width: 100%; /* Full width of the screen */
+    max-width: 1200px; /* Maximum width for the container */
+}
+
+/* Individual tile (now an anchor) */
+.tile {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex; /* Use flexbox to allow content to grow */
+    flex-direction: column; /* Stack content vertically */
+    text-decoration: none; /* Remove underline */
+    color: inherit; /* Inherit text color */
+    cursor: pointer;
+    min-width: 200px; /* Minimum width for tiles */
+    max-width: calc(33% - 20px); /* Three tiles per row with gap consideration */
+    min-height: 150px; /* Set a minimum height for tiles */
+}
+
+.tile:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+/* Tile content */
+.tile img {
+    width: 100%;
+    height: auto;
+    display: block; /* Ensure the image covers the full width */
+}
+
+.tile .tile-content {
+    padding: 15px;
+    text-align: center;
+    flex-grow: 1; /* Allow content to fill available space */
+}
+
+.tile-container.vertical {
+    flex-direction: column; /* Stack tiles vertically */
+    align-items: center; /* Center tiles horizontally */
+}
+
+/* Full-width text styles */
+.full-width {
+    width: 100%; /* Full width of the container */
+    text-align: center; /* Center the text */
+    padding: 0 15px; /* Optional: Add horizontal padding */
+    font-size: 18px; /* Adjust font size as needed */
+    font-weight: bold; /* Make text bold */
+    color: #333; /* Text color */
+}
+
+/* Color cycle for the tiles: Red, Blue, Green, Yellow */
+.tile:nth-child(4n+1) {
+    background-color: #ffcccc; /* Light Red */
+}
+
+.tile:nth-child(4n+2) {
+    background-color: #add8e6; /* Light Blue */
+}
+
+.tile:nth-child(4n+3) {
+    background-color: #d3f9d8; /* Light Green */
+}
+
+.tile:nth-child(4n+4) {
+    background-color: #fffacd; /* Light Yellow */
+}
+
+/* Updated font sizes */
+.tile .tile-title {
+    font-size: 18px;
+    margin-bottom: 10px;
+    font-weight: bold;
+    color: #333;
+}
+
+.tile .tile-description {
+    font-size: 16px;
+    color: #555;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .tile {
+        max-width: calc(50% - 20px); /* Two tiles per row on medium screens */
+    }
+}
+
+@media (max-width: 480px) {
+    .tile {
+        max-width: 100%; /* Single column on very small screens */
+    }
+}
+
+/* General form styles */
+.form-container {
+    background-color: #fff; /* White background for the form */
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    padding: 20px; /* Padding inside the form */
+    margin: 20px auto; /* Center the form and add margin */
+    max-width: 100%; /* Max width 100% for responsive design */
+    width: 90%; /* Width of the form is 90% of its container */
+    box-sizing: border-box; /* Include padding in width */
+}
+
+/* Style for form inputs */
+.form-container input[type="text"],
+.form-container input[type="email"],
+.form-container input[type="number"],
+.form-container input[type="password"],
+.form-container select {
+    width: 100%; /* Full width */
+    padding: 10px; /* Padding for input fields */
+    margin: 10px 0; /* Margin around input fields */
+    border: 1px solid #ccc; /* Light gray border */
+    border-radius: 4px; /* Rounded corners */
+    font-size: 14px; /* Font size */
+}
+
+/* Style for form buttons */
+.form-container button {
+    background-color: #28a745; /* Green background for buttons */
+    color: white; /* White text */
+    border: none; /* No border */
+    border-radius: 4px; /* Rounded corners */
+    padding: 10px; /* Padding for buttons */
+    cursor: pointer; /* Pointer cursor on hover */
+    font-size: 16px; /* Font size */
+    transition: background-color 0.3s; /* Transition effect */
+    width: 100%; /* Full width for buttons */
+}
+
+/* Button hover effect */
+.form-container button:hover {
+    background-color: #218838; /* Darker green on hover */
+}
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 600px) {
+    .form-container {
+        padding: 15px; /* Reduce padding on small screens */
+    }
+
+    .form-container input[type="text"],
+    .form-container input[type="email"],
+    .form-container input[type="password"],
+    .form-container select {
+        font-size: 12px; /* Smaller font size on small screens */
+    }
+
+    .form-container button {
+        font-size: 14px; /* Smaller button font size */
+    }
+}
+
+/* General table styles */
+.table-container {
+    margin: 20px auto; /* Center the table */
+    max-width: 800px; /* Maximum width for the table */
+    overflow-x: auto; /* Allow horizontal scrolling on small screens */
+}
+
+/* Table styles */
+.table {
+    width: 100%; /* Full width */
+    border-collapse: collapse; /* Remove spacing between cells */
+    margin-top: 20px; /* Space above the table */
+    background-color: #fff; /* White background for the table */
+}
+
+/* Table header styles */
+.table thead {
+    background-color: #007bff; /* Blue background for the header */
+    color: white; /* White text color */
+}
+
+/* Table header cell styles */
+.table th {
+    padding: 12px; /* Padding for header cells */
+    text-align: left; /* Align text to the left */
+    font-size: 16px; /* Font size for header */
+}
+
+/* Table body cell styles */
+.table td {
+    padding: 10px; /* Padding for body cells */
+    border: 1px solid #ddd; /* Light gray border */
+    font-size: 14px; /* Font size for body cells */
+}
+
+/* Table row hover effect */
+.table tbody tr:hover {
+    background-color: #f1f1f1; /* Light gray background on hover */
+}
+
+/* Table footer styles */
+.table tfoot {
+    background-color: #f9f9f9; /* Light gray background for footer */
+}
+
+/* Footer cell styles */
+.table tfoot td {
+    font-weight: bold; /* Bold text for footer */
+    padding: 12px; /* Padding for footer cells */
+}
+
+.mini-button {
+    display: inline-block;         /* Allows padding and block-like styling for <a> */
+    padding: 10px 20px;            /* Increase padding for a larger button */
+    font-size: 16px;               /* Larger font size */
+    border: 1px solid #5bc0de;     /* Light blue border */
+    border-radius: 4px;            /* Slightly rounded corners */
+    background-color: #5bc0de;     /* Light blue background */
+    color: white;                  /* White text */
+    text-decoration: none;         /* Remove underline (hyperlink style) */
+    cursor: pointer;               /* Pointer cursor on hover */
+    transition: background-color 0.3s ease; /* Smooth hover effect */
+}
+
+.mini-button:hover {
+    background-color: #31b0d5;     /* Slightly darker shade of blue on hover */
+}
+
+.mini-button:active {
+    background-color: #269abc;     /* Even darker shade when clicked */
+    border-color: #1b6d85;         /* Change border color on click */
+}
+
+.mini-button:disabled {
+    background-color: #cccccc;     /* Gray background when disabled */
+    color: #666666;                /* Dimmed text color when disabled */
+    cursor: not-allowed;           /* Disabled cursor */
+}
+

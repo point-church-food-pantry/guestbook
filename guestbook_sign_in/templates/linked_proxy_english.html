@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        {% load static %} <link rel="stylesheet" href="{% static 'guestbook_sign_in/localstyles.css' %}">
+        <script src="{% static 'guestbook_sign_in/jquery-3.7.1.slim.min.js' %}"></script>
+        <script src="{% static 'guestbook_sign_in/localjs.js' %}"></script>                
+        <title>Proxy Authorization (English)</title>
+    </head>
+    <body>
+        <div class="tile-container vertical">
+            <h4>North Carolina Department of Agriculture and Consumer Services</h4>
+            <h4>Food Distribution Division</h4>
+            <h4>THE EMERGENCY FOOD ASSISTANCE PROGRAM (TEFAP) PROXY AUTHORIZATION</h4>
+            <h4><mark>Revised</mark></h4>
+            <div class="form-container">
+                {{ form.media }}
+                <form action="" method="post">
+                {% csrf_token %}
+                    <div class="table-container">
+                        <table class="table">
+                            <tbody>
+                                <tr>
+                                    <th>Name of Food Bank/Food Pantry/Distribution Site:</th>
+                                    <td>Carolina Care Pantry</td>
+                                </tr>
+                                <tr>
+                                    <th>Does participant recieve FNS benefits?</th>
+                                    <td>{{ form.fns }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Household monthly gross income: $</th>
+                                    <td>{{ form.monthly_income }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <h4>I authorize the following person(s) to pick up food for me from this TEFAP distribution site:</h4>
+                        <table class="table">
+                            <tbody>
+                                <tr>
+                                    <th>Proxy full name:</th>
+                                    <td>**Authorized Representative 1 from previous sheet**</td>
+                                </tr>
+                                <tr>
+                                    <th>Proxy full name:</th>
+                                    <td>**Authorized Representative 2 from previous sheet**</td>
+                                </tr>
+                                <tr>
+                                    <th>Participant Signature:</th>
+                                    <td>{{ form.proxy_signature }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Date:</th>
+                                    <td>{{ today }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <button type="submit">Submit</button>
+                </form>
+
+            </div>
+            <p>PROXY AUTHORIZATION PERIOD IS VALID OCTOBER 1ST-SEPTEMBER 30TH AND MUST BE RENEWED ANNUALLY WITH THE UPDATED INCOME ELIGIBLITY GUIDELINES</p>
+            <p>TEFAP participants can update their information and/or change their designated proxies anytime during the year.</p>
+            <p>In accordance with federal civil rights law and U.S. Department of Agriculture (USDA) civil rights regulations and policies,
+            this institution is prohibited from discriminating on the basis of race, color, national origin, sex (including gender identity
+            and sexual orientation), disability, age, or reprisal or retaliation for prior civil rights activity.</p>
+            <p>Program information may be made available in languages other than English. Persons with disabilities who require
+            alternative means of communication to obtain program information (e.g., Braille, large print, audiotape, American Sign
+            Language), should contact the responsible state or local agency that administers the program or USDA’s TARGET Center
+            at (202) 720-2600 (voice and TTY) or contact USDA through the Federal Relay Service at (800) 877-8339.</p>
+            <p>To file a program discrimination complaint, a Complainant should complete a Form AD-3027, USDA Program Discrimination Complaint Form which can 
+            be obtained online at: <u>https://www.usda.gov/sites/default/files/documents/USDA-OASCR%20P-Complaint-Form-0508-0002-508-11-28-17Fax2Mail.pdf</u>, 
+            from any USDA office, by calling (866) 632-9992, or by writing a letter addressed to USDA. The letter must contain the complainant’s name, address, 
+            telephone number, and a written description of the alleged discriminatory action in sufficient detail to inform the Assistant Secretary for Civil 
+            Rights (ASCR) about the nature and date of an alleged civil rights violation. The completed AD-3027 form or letter must be submitted to USDA by: 
+            1.<b>mail:</b> U.S. Department of Agriculture, Office of the Assistant Secretary for Civil Rights, 1400 Independence Avenue, SW, Washington, D.C. 
+            20250-9410; or 2. <b>fax:</b> (833) 256-1665 or (202) 690-7442; or 3. <b>email:</b> <u>program.intake@usda.gov</u>This institution is an equal
+            opportunity provider.</p>
+            <p>07 TEFAP Proxy Authorization Form September 2023_Revised Nondiscrimination Statement September 2023</p>
+        </div>
+    </body>
+</html>

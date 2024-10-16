@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        {% load static %} <link rel="stylesheet" href="{% static 'guestbook_sign_in/localstyles.css' %}">
+        <script src="{% static 'guestbook_sign_in/jquery-3.7.1.slim.min.js' %}"></script>
+        <script src="{% static 'guestbook_sign_in/localjs.js' %}"></script>                
+        <title>Nuevo Invitado (Español)</title>
+    </head>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            document.getElementById("lookup_old_guest").addEventListener("click", fetchGuestData);
+        });
+    </script>
+    <body>
+        <div class="tile-container vertical">
+            <div class="nav-bar">
+                {% if user.is_authenticated %}
+                    <a href="{% url 'account_logout' %}"><button class="nav-button">Log Out</button></a>
+                {% else %}
+                    <a href="{% url 'account_login' %}"><button class="nav-button">Log In</button></a>
+                {% endif %}
+                <a href="{% url 'index' %}"><button class="nav-button">Landing Page</button></a>
+                <a href="{% url 'create_new_guest' 'English' %}"><button class="nav-button">New Guest (English)</button></a>
+                <a href="{% url 'create_new_guest' 'Spanish' %}"><button class="nav-button">Nuevo Invitado (Español)</button></a>
+                <a href="{% url 'sign_in' %}"><button class="nav-button">Sign In</button></a>
+                <a href="{% url 'sign_out' %}"><button class="nav-button">Sign Out / Admin Page</button></a>
+                <a href="{% url 'unlinked_proxy' %}"><button class="nav-button">Fill Proxy Form</button></a>
+                <a href="{% url 'generate_report' %}"><button class="nav-button">Generate Report</button></a>
+            </div>
+            <div class="full-width">
+                <h3>Formulario de elegibilidad para el TEFAP de octubre de 2024 a septiembre de 2025</h3>
+            </div>
+            <div class="form-container">
+            {{ form.media }}
+            <form action="" method="post">
+            {% csrf_token %}
+            {% if user.is_authenticated %}
+            <div class="table-container">
+                <h4>Búsqueda de invitados:</h4>
+                Si recuerda su ID de invitado del año anterior, utilice esta barra de búsqueda para completar previamente cierta información de su cuenta anterior.
+                <table class="table">
+                    <tbody>
+                        <tr>
+                            <th>ID de invitado anterior:</th>
+                            <td>{{ form.guest_ID }}</td>
+                            <td><button id="lookup_old_guest" type="button">Buscar</button></td>
+                        </tr>                              
+                    </tbody>
+                </table>
+            </div>
+            {% endif %}
+            <table class="table-container">
+                <table class="table">
+                    <tbody>
+                    <tr>
+                        <th>Nombre:</th>
+                        <td>{{ form.first_name }}</td>
+                    </tr>  
+                    <tr>
+                        <th>Apellido:</th>
+                        <td>{{ form.last_name }}</td>
+                    </tr>  
+                    <tr>
+                        <th>Direccion:</th>
+                        <td>{{ form.address }}</td>
+                    </tr>
+                    <tr>
+                        <th>Ciudad:</th>
+                        <td>{{ form.city }}</td>
+                    </tr>
+                    <tr>
+                        <th>Condado:</th>
+                        <td>{{ form.county }}</td>
+                    </tr>
+                    <tr>
+                        <th>Cantidad de personas en el hogar:</th>
+                        <td>{{ form.number_in_household }}</td>
+                    </tr>
+                    </tbody>        
+                </table>
+            </table>
+            <div style="text-align:center">
+                <h3>Vigente desde el 1 de octubre de 2024 hasta el 30 de septiembre de 2025</h3>
+                <h4>(Los ingresos brutos del hogar deben ser iguales o inferiores para el tamano correspondiente del hogar).</h4>
+            </div>    
+            <div class="table-container">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">TAMANO DEL HOGAR</th>
+                            <th scope="col">POR ANO</th>
+                            <th scope="col">POR MES</th>
+                            <th scope="col">POR SEMANA</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>{{ income_table.0.0 }}</td>
+                            <td>{{ income_table.0.1 }}</td>
+                            <td>{{ income_table.0.2 }}</td>
+                            <td>{{ income_table.0.3 }}</td>
+                        </tr>
+                        <tr>
+                            <td>{{ income_table.1.0 }}</td>
+                            <td>{{ income_table.1.1 }}</td>
+                            <td>{{ income_table.1.2 }}</td>
+                            <td>{{ income_table.1.3 }}</td>
+                        </tr>
+                        <tr>
+                            <td>{{ income_table.2.0 }}</td>
+                            <td>{{ income_table.2.1 }}</td>
+                            <td>{{ income_table.2.2 }}</td>
+                            <td>{{ income_table.2.3 }}</td>
+                        </tr>
+                        <tr>
+                            <td>{{ income_table.3.0 }}</td>
+                            <td>{{ income_table.3.1 }}</td>
+                            <td>{{ income_table.3.2 }}</td>
+                            <td>{{ income_table.3.3 }}</td>
+                        </tr>
+                        <tr>
+                            <td>{{ income_table.4.0 }}</td>
+                            <td>{{ income_table.4.1 }}</td>
+                            <td>{{ income_table.4.2 }}</td>
+                            <td>{{ income_table.4.3 }}</td>
+                        </tr>
+                        <tr>
+                            <td>{{ income_table.5.0 }}</td>
+                            <td>{{ income_table.5.1 }}</td>
+                            <td>{{ income_table.5.2 }}</td>
+                            <td>{{ income_table.5.3 }}</td>
+                        </tr>
+                        <tr>
+                            <td>{{ income_table.6.0 }}</td>
+                            <td>{{ income_table.6.1 }}</td>
+                            <td>{{ income_table.6.2 }}</td>
+                            <td>{{ income_table.6.3 }}</td>
+                        </tr>
+                        <tr>
+                            <td>{{ income_table.7.0 }}</td>
+                            <td>{{ income_table.7.1 }}</td>
+                            <td>{{ income_table.7.2 }}</td>
+                            <td>{{ income_table.7.3 }}</td>
+                        </tr>
+                        <tr>
+                            <td>CADA MIEMBRO ADICIONAL DE LA FAMILIA</td>
+                            <td>{{ income_table.8.1 }}</td>
+                            <td>{{ income_table.8.2 }}</td>
+                            <td>{{ income_table.8.3 }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        <p>La tabla anterior muestra un ingreso bruto anual para cada tamano de familia. Si el ingreso de su hogar es <b><u>igual o 
+        inferior</b></u> al ingreso indicado para la cantidad de personas en su hogar, usted es elegible para recibir alimentos. Un 
+        hogar se define como un grupo de personas que viven juntas y comparten el dinero y otros recursos para obtener alimentos. 
+        <b>O, <u>si actualmente participa en un Programa de Servicios de Alimentos y Nutricion (es decir, cupones para alimentos),
+        </b> es automaticamente elegible para recibir el TEFAP y no necesita ver la escala de ingresos.</u></p>
+        <br>
+        <p><b><u>Nota:</b></u> Lo anterior puede leerse a personas que no puedan leer. Las personas que no puedan firmar con su nombre 
+        pueden firmar usando una X.</p>
+        <br>
+        <p><b><u>Lea atentamente la siguiente declaracion, luego firme el formulario y escriba la fecha de hoy.</b></u> <br>
+        Comprendo que cualquier tergiversacion de la necesidad, venta o uso indebido de los alimentos que he recibido esta prohibida y 
+        podria dar lugar a una multa, encarcelamiento o ambos. (Sec. 211 E, PL 96-494 y Sec. 4C, PL 93-86 y sus enmiendas). <br>
+        <br>
+        <b><u><mark> La siguiente seccion es solo para personas confinadas en su hogar </b></u></mark> <br>        
+        <br>
+        Las siguientes personas estan autorizadas a recoger mis alimentos (si corresponde): </p>
+        
+        <table class="table">
+            <tbody>
+                <tr>
+                    <th>Representante autorizado:</th>
+                    <td>{{ form.authorized_representative_1 }}</td>
+                </tr>  
+                <tr>
+                    <th>Representante autorizado:</th>
+                    <td>{{ form.authorized_representative_2 }}</td>
+                </tr>
+                <tr>
+                    <th>Fecha:</th>
+                    <td>{{ today }}</td>
+                </tr>
+                <tr>
+                    <th>Firma del cliente:</th>
+                    <td>{{ form.tefap_signature }}</td>
+                </tr>
+            </tbody>        
+        </table>
+        <p>De acuerdo con la ley federal de derechos civiles y las reglamentaciones y políticas de derechos civiles del Departamento de Agricultura de los EE. UU. (USDA), esta institución tiene prohibido discriminar por motivos de raza, color, nacionalidad, sexo (incluida la identidad de género y orientación sexual), discapacidad, edad o represalias por actividades previas de derechos civiles.</p>
+        <br>
+        <p>La información del programa puede estar disponible en otros idiomas que no sean inglés. Las personas con discapacidades que requieran medios alternativos de comunicación para obtener información del programa (p. ej., Braille, letra grande, cinta de audio, lenguaje de señas estadounidense) deben comunicarse con la agencia estatal o local responsable que administra el programa o el Centro TARGET del USDA al (202) 720-2600 (voz y TTY) o comunicarse con el USDA a través del Servicio Federal de Retransmisión al (800) 877-8339.</p>
+        <br>
+        <p>Para presentar una queja por discriminación en el programa, un reclamante debe completar un Formulario AD-3027, Formulario de queja por discriminación en el programa del USDA, que puede
+        obtenerse en línea en: https://www.usda.gov/sites/default/files/documents/USDA-OASCR%20P-Complaint-Form-0508-0002-508-11-28-17Fax2Mail.pdf, desde cualquier oficina del USDA, llamando al (866) 632-9992 o escribiendo una carta dirigida al USDA. La carta debe contener el nombre, la dirección, el número de teléfono del reclamante y una descripción escrita de la presunta acción discriminatoria con suficiente detalle para informar al subsecretario de Derechos Civiles (Assistant Secretary for Civil Rights, ASCR) sobre la naturaleza y la fecha de una presunta violación de los derechos civiles. El formulario AD-3027 completado o la carta deben enviarse al USDA por correo postal:</p>
+        <br>
+        <p>(1) Correo: Departamento de Agricultura de los EE. UU., Oficina del Subsecretario de Derechos Civiles,
+        1400 Independence Avenue, SW, Washington, D.C. 20250-9410;</p>
+        <br>
+        <p>(2) Fax: (833) 256-1665 o (202) 690-7442 o (3) Correo electrónico: program.intake@usda.gov
+        Esta institución es un proveedor que ofrece igualdad de oportunidades.</p>
+        <table class="table">
+            <tbody>
+                <tr>
+                    <th>Teléfono:</th>
+                    <td>{{ form.phone }}</td>
+                </tr>
+                <tr>
+                    <th>Correo electrónico:</th>
+                    <td>{{ form.email }}</td>
+            </tbody>
+        </table>     
+        <button type="submit">Submit</button>
+        </form>
+    </body>
+</html>
+

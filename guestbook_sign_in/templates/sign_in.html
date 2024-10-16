@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        {% load static %} <link rel="stylesheet" href="{% static 'guestbook_sign_in/localstyles.css' %}">
+        <script src="{% static 'guestbook_sign_in/jquery-3.7.1.slim.min.js' %}"></script>
+        <script src="{% static 'guestbook_sign_in/localjs.js' %}"></script>                
+        <title>Sign-In: Guest Lookup</title>
+    </head>
+    <body>
+    <div class="tile-container vertical">
+        <div class="nav-bar">
+            {% if user.is_authenticated %}
+                <a href="{% url 'account_logout' %}"><button class="nav-button">Log Out</button></a>
+            {% else %}
+                <a href="{% url 'account_login' %}"><button class="nav-button">Log In</button></a>
+            {% endif %}
+            <a href="{% url 'index' %}"><button class="nav-button">Landing Page</button></a>
+            <a href="{% url 'create_new_guest' 'English' %}"><button class="nav-button">New Guest (English)</button></a>
+            <a href="{% url 'create_new_guest' 'Spanish' %}"><button class="nav-button">Nuevo Invitado (Español)</button></a>
+            <a href="{% url 'sign_in' %}"><button class="nav-button">Sign In</button></a>
+            <a href="{% url 'sign_out' %}"><button class="nav-button">Sign Out / Admin Page</button></a>
+            <a href="{% url 'unlinked_proxy' %}"><button class="nav-button">Fill Proxy Form</button></a>
+            <a href="{% url 'generate_report' %}"><button class="nav-button">Generate Report</button></a>
+        </div>
+        <div class="full-width">
+            <h3>Sign-In: Guest Lookup</h3>
+        </div>
+        Use the search bar below to search guests by first or last name.
+        <div class="form-container">
+            <form action="" method="post">
+                {% csrf_token %}
+                {{ searchbar.name_search }}
+                <input class="mini-button" type="submit" value="Submit">
+            </form>
+        </div>
+        <div class="table-container">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Guest ID</th>
+                        <th scope="col">First Name</th>
+                        <th scope="col">Last Name</th>
+                        <th scope="col">Sign In</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for gt in guests %}
+                    <tr>
+                        <td>{{ gt.guest_ID }}</td>
+                        <td>{{ gt.first_name }}</td>
+                        <td>{{ gt.last_name }}</td>
+                        <td>
+                            <a class="mini-button" href="{% url 'weekly_signatures' 'English' gt.guest_ID %}">English</a>
+                            <a class="mini-button" href="{% url 'weekly_signatures' 'Spanish' gt.guest_ID %}">Spanish</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </body>
+</html>
+

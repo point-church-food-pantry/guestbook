@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        {% load static %} <link rel="stylesheet" href="{% static 'guestbook_sign_in/localstyles.css' %}">
+        <title>Guest Sign-In</title>
+    </head>
+    <body>
+        <div class="nav-bar">
+            {% if user.is_authenticated %}
+                <a href="{% url 'account_logout' %}"><button class="nav-button">Log Out</button></a>
+            {% else %}
+                <a href="{% url 'account_login' %}"><button class="nav-button">Log In</button></a>
+            {% endif %}
+        </div>
+        <div class="tile-container vertical">
+            <div class="full-width">
+                <h1>Carolina Care Pantry</h1>
+            </div>
+            <div class="tile-container">
+                <a href="{% url 'create_new_guest' 'English' %}" class="tile">
+                    <div class="tile-content">
+                        <div class="tile-title">New Guest (English)</div>
+                        <div class="tile-description">Sign up for a new guest account. Select this option if this is your first week, or if you have not visited the Carolina Care Center since October 1st.</div>
+                    </div>
+                </a>
+                <a href="{% url 'create_new_guest' 'Spanish' %}" class="tile">
+                    <div class="tile-content">
+                        <div class="tile-title">Nuevo Invitado (Español)</div>
+                        <div class="tile-description">Regístrese para obtener una nueva cuenta de invitado. Seleccione esta opción si esta es su primera semana o si no ha visitado Carolina Care Center desde el 1 de octubre.</div>
+                    </div>
+                </a>
+                <a href="{% url 'sign_in' %}" class="tile">
+                    <div class="tile-content">
+                        <div class="tile-title">Sign In</div>
+                        <div class="tile-description">Sign in here if you have an existing guest account. If you have visited the food pantry since last October 1st, you most likely have an account.</div>
+                    </div>
+                </a>
+                <a href="{% url 'sign_out' %}" class="tile">
+                    <div class="tile-content">
+                        <div class="tile-title">Sign Out / Admin Page</div>
+                        <div class="tile-description">Staff: Access the Admin Page to sign out guests who signed in under the wrong account. Requires administrator access.</div>
+                    </div>
+                </a>
+                <a href="{% url 'unlinked_proxy' %}" class="tile">
+                    <div class="tile-content">
+                        <div class="tile-title">Fill Proxy Form</div>
+                        <div class="tile-description">Fill out a proxy form for your account to authorize a friend, neighbor, or family member to pick up food for you.</div>
+                    </div>
+                </a>
+                <a href="{% url 'generate_report' %}" class="tile">
+                    <div class="tile-content">
+                        <div class="tile-title">Generate Report</div>
+                        <div class="tile-description">Staff: Print signed TEFAP forms, download database backups, and print alpha lists. Requires administrator access.</div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </body>
+</html>
+
+
+

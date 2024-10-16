@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        {% load static %} <link rel="stylesheet" href="{% static 'guestbook_sign_in/localstyles.css' %}">
+        <script src="{% static 'guestbook_sign_in/jquery-3.7.1.slim.min.js' %}"></script>
+        <script src="{% static 'guestbook_sign_in/localjs.js' %}"></script>                
+        <title>New Guest (English Form)</title>
+    </head>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            document.getElementById("lookup_old_guest").addEventListener("click", fetchGuestData);
+        });
+    </script>
+    <body>
+        <div class="tile-container vertical">
+            <div class="nav-bar">
+                {% if user.is_authenticated %}
+                    <a href="{% url 'account_logout' %}"><button class="nav-button">Log Out</button></a>
+                {% else %}
+                    <a href="{% url 'account_login' %}"><button class="nav-button">Log In</button></a>
+                {% endif %}
+                <a href="{% url 'index' %}"><button class="nav-button">Landing Page</button></a>
+                <a href="{% url 'create_new_guest' 'English' %}"><button class="nav-button">New Guest (English)</button></a>
+                <a href="{% url 'create_new_guest' 'Spanish' %}"><button class="nav-button">Nuevo Invitado (Español)</button></a>
+                <a href="{% url 'sign_in' %}"><button class="nav-button">Sign In</button></a>
+                <a href="{% url 'sign_out' %}"><button class="nav-button">Sign Out / Admin Page</button></a>
+                <a href="{% url 'unlinked_proxy' %}"><button class="nav-button">Fill Proxy Form</button></a>
+                <a href="{% url 'generate_report' %}"><button class="nav-button">Generate Report</button></a>
+            </div>
+            <div class="full-width">
+                <h3>TEFAP Eligibility Form October 2024 - September 2025</h3>
+            </div>
+            <div class="form-container">
+                {{ form.media }}
+                <form action="" method="post">
+                {% csrf_token %}
+                {% if user.is_authenticated %}
+                <div class="table-container">
+                    <h4>Guest Lookup:</h4>
+                    If you remember your guest ID from the previous year, use this search bar to pre-populate some information from your old account.
+                    <table class="table">
+                        <tbody>
+                            <tr>
+                                <th>Old Guest ID:</th>
+                                <td>{{ form.guest_ID }}</td>
+                                <td><button id="lookup_old_guest" type="button">Search</button></td>
+                            </tr>                              
+                        </tbody>
+                    </table>
+                </div>
+                {% endif %}
+                <div class="table-container">
+                    <table class="table">
+                        <tbody>
+                            <tr>
+                                <th>First Name:</th>
+                                <td>{{ form.first_name }}</td>
+                            </tr>  
+                            <tr>
+                                <th>Last Name:</th>
+                                <td>{{ form.last_name }}</td>
+                            </tr>  
+                            <tr>
+                                <th>Address:</th>
+                                <td>{{ form.address }}</td>
+                            </tr>
+                            <tr>
+                                <th>City:</th>
+                                <td>{{ form.city }}</td>
+                            </tr>
+                            <tr>
+                                <th>County:</th>
+                                <td>{{ form.county }}</td>
+                            </tr>
+                            <tr>
+                                <th>Number of People in Household:</th>
+                                <td>{{ form.number_in_household }}</td>
+                            </tr>
+                        </tbody>        
+                    </table>
+                </div>
+                <div style="text-align:center">
+                    <h3>Effective October 1, 2024 through September 30, 2025</h3>
+                    <h4>(Household gross income must be at or below for appropriate size household.)</h4>
+                </div>
+                <div class="table-container">        
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Household Size</th>
+                                <th scope="col">Per Year</th>
+                                <th scope="col">Per Month</th>
+                                <th scope="col">Per Week</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>{{ income_table.0.0 }}</td>
+                                <td>{{ income_table.0.1 }}</td>
+                                <td>{{ income_table.0.2 }}</td>
+                                <td>{{ income_table.0.3 }}</td>
+                            </tr>
+                            <tr>
+                                <td>{{ income_table.1.0 }}</td>
+                                <td>{{ income_table.1.1 }}</td>
+                                <td>{{ income_table.1.2 }}</td>
+                                <td>{{ income_table.1.3 }}</td>
+                            </tr>
+                            <tr>
+                                <td>{{ income_table.2.0 }}</td>
+                                <td>{{ income_table.2.1 }}</td>
+                                <td>{{ income_table.2.2 }}</td>
+                                <td>{{ income_table.2.3 }}</td>
+                            </tr>
+                            <tr>
+                                <td>{{ income_table.3.0 }}</td>
+                                <td>{{ income_table.3.1 }}</td>
+                                <td>{{ income_table.3.2 }}</td>
+                                <td>{{ income_table.3.3 }}</td>
+                            </tr>
+                            <tr>
+                                <td>{{ income_table.4.0 }}</td>
+                                <td>{{ income_table.4.1 }}</td>
+                                <td>{{ income_table.4.2 }}</td>
+                                <td>{{ income_table.4.3 }}</td>
+                            </tr>
+                            <tr>
+                                <td>{{ income_table.5.0 }}</td>
+                                <td>{{ income_table.5.1 }}</td>
+                                <td>{{ income_table.5.2 }}</td>
+                                <td>{{ income_table.5.3 }}</td>
+                            </tr>
+                            <tr>
+                                <td>{{ income_table.6.0 }}</td>
+                                <td>{{ income_table.6.1 }}</td>
+                                <td>{{ income_table.6.2 }}</td>
+                                <td>{{ income_table.6.3 }}</td>
+                            </tr>
+                            <tr>
+                                <td>{{ income_table.7.0 }}</td>
+                                <td>{{ income_table.7.1 }}</td>
+                                <td>{{ income_table.7.2 }}</td>
+                                <td>{{ income_table.7.3 }}</td>
+                            </tr>
+                            <tr>
+                                <td>Each Additional Family Member</td>
+                                <td>{{ income_table.8.1 }}</td>
+                                <td>{{ income_table.8.2 }}</td>
+                                <td>{{ income_table.8.3 }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <p>The above table shows a yearly gross income for each family size. If your household income is <b><u>at or below</b></u> the income listed for 
+                the number of people in your household, you are eligible to recieve food. A household is defined as a group of people who live together and share 
+                money and other resources in order to get food. <b>OR, <u>if you currently participate in a Food & Nutrition Services Program (i.e. Food Stamps) 
+                </b> you are automatically eligible to recieve TEFAP and do not need to look at the income scale. </u></p>
+                <br>
+                <p><b><u>Note:</b></u> The above may be read to persons who are unable to read. People who are unable to sign their name may sign by using an X.</p>
+                <br>
+                <p><b><u>Please read the following statement carefully, then sign the form and write in today's date.</b></u><br>
+                I understand that any misrepresentation of need, sale, or misuse of the foods I have recieved is prohibited and could result in a fine, imprisonment, 
+                or both. (Sec. 211 E, PL 96-494 and Sec. 4C, PL 93-86 as amended.)</p>
+                <br>
+                <b><u><mark> The section below is only for homebound individuals </b></u></mark></p> 
+                <br>
+                <p>The following persons are authorized to mick up my food (if applicable):</p>
+                
+                <table class="table">
+                    <tbody>
+                        <tr>
+                            <th>Authorized Representative:</th>
+                            <td>{{ form.authorized_representative_1 }}</td>
+                        </tr>  
+                        <tr>
+                            <th>Authorized Representative:</th>
+                            <td>{{ form.authorized_representative_2 }}</td>
+                        </tr>
+                        <tr>
+                            <th>Date:</th>
+                            <td>{{ today }}</td>
+                        </tr>
+                        <tr>
+                            <th>Signature:</th>
+                            <td>{{ form.tefap_signature }}</td>
+                        </tr>
+                    </tbody>        
+                </table>
+                <br>
+                <p>In accordance with federal civil rights law and U.S. Department of Agriculture (USDA) civil rights regulations and policies, this institution is 
+                prohibited from discriminating on the basis of race, color, national origin, sex (including gender identity and sexual orientation), disability, age, 
+                or reprisal or retaliation for prior civil rights activity.</p>
+                <br>
+                <p>Program information may be made available in languages other than English. Persons with disabilities who require alternative means of communication to 
+                obtain program information (e.g. braille, large print, audiotape, American Sign Language), shouldcontact the responsible state or local agency that 
+                administers the program or USDA's TARGET Center at (202) 720-2600 (voice and TTY) or contact USDA through the Federal Relay Service at (800) 877-8339.</p>
+                <br>
+                <p>To file a program discrimination complaint, a Complainant should complete a <u>Form AD-3027</u>, USDA Program Discrimination Complaint Form which can 
+                be obtained online at: <u>https://www.usda.gov/sites/default/files/documents/ad-3027.pdf</u>, 
+                from any USDA office, by calling (866) 632-9992, or by writing a letter addressed to USDA. The letter must contain the complainant's name, address, 
+                telephone number, and a written description of the alleged discriminatory action in sufficient detail to inform the Assistant Secretary for Civil Rights 
+                (ASCR) about the nature and date of an alleged civil rights violation. The completed AD-3027 form or letter must be submitted to USDA by: 1.) mail: U.S. 
+                Department of Agriculture Office of the Assistant Secretary for Civil Rights, 1400 Independence Avenue, SW Washington, D.C. 20250-9410; or 2.) fax: 
+                (833) 256-1665 or (202) 690-7442; or 3.) email: Program.Intake@usda.gov.</p>
+                <br>
+                <p>This institution is an equal opportunity provider.</p>
+                <br>
+                <table class="table">
+                    <tbody>
+                        <tr>
+                            <th>Phone:</th>
+                            <td>{{ form.phone }}</td>
+                        </tr>
+                        <tr>
+                            <th>Email:</th>
+                            <td>{{ form.email }}</td>
+                    </tbody>
+                </table>   
+                <button type="submit">Submit</button>
+                </form>
+            </div>
+        </div>
+    </body>
+</html>
