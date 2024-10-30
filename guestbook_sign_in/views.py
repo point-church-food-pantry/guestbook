@@ -135,7 +135,7 @@ def linked_proxy_form(request, language, internal_ID, guest_ID):
     if language == 'English':
         html = 'linked_proxy_english.html'
     else:
-        html = None
+        html = 'linked_proxy_spanish.html'
     
     return render(request, html, context = context)
 

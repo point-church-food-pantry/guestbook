@@ -11,51 +11,56 @@ from jsignature.utils import draw_signature
 from datetime import date
 
 OVERLAY_DIMS = {'2024-2025 English Front' : {'base_pdf' : 'guestbook_sign_in/tefap_pdfs/2024-2025 English Front.pdf',
-                                             'name' : {'x' : 3.5*72.0, 'y' : 10.0*72.0},
-                                             'address' : {'x' : 3.5*72.0, 'y' : 9.80*72.0},
-                                             'city' : {'x' : 3.5*72.0, 'y' : 9.58*72.0},
-                                             'county' : {'x' : 3.5*72.0, 'y' : 9.35*72.0},
-                                             'number_in_household' : {'x' : 3.5*72.0, 'y' : 9.12*72.0},
+                                             'name' : {'x' : 3.5*72.0, 'y' : 10.22*72.0},
+                                             'address' : {'x' : 3.5*72.0, 'y' : 10.0*72.0},
+                                             'city' : {'x' : 3.5*72.0, 'y' : 9.80*72.0},
+                                             'county' : {'x' : 3.5*72.0, 'y' : 9.58*72.0},
+                                             'number_in_household' : {'x' : 3.5*72.0, 'y' : 9.35*72.0},
                                              'authorized_representative_1' : {'x' : 3.5*72.0, 'y' : 3.53*72.0},
                                              'authorized_representative_2' : {'x' : 3.5*72.0, 'y' : 3.15*72.0},
                                              'front_signature' : {'x' : 1.0*72.0, 'y' : 2.78*72.0},
                                              'date' : {'x' : 3.2*72.0, 'y' : 2.78*72.0},
                                              'guest_ID' : {'x' : 6.0*72.0, 'y' : 0.7*72.0}},
                 '2024-2025 English Proxy' : {'base_pdf' : 'guestbook_sign_in/tefap_pdfs/2024-2025 English Proxy.pdf',
-                                             'care_center' : {'x' : 4.5*72.0, 'y' : 9.0*72.0},
-                                             'name' : {'x' : 2.5*72.0, 'y' : 8.6*72.0},
-                                             'address' : {'x' : 2.5*72.0, 'y' : 8.2*72.0},
-                                             'city_county' : {'x' : 2.5*72.0, 'y' : 8.0*72.0},
-                                             'number_in_household' : {'x' : 4.5*72.0, 'y' : 7.7*72.0},
+                                             'care_center' : {'x' : 4.5*72.0, 'y' : 9.15*72.0},
+                                             'name' : {'x' : 2.5*72.0, 'y' : 8.7*72.0},
+                                             'address' : {'x' : 2.5*72.0, 'y' : 8.4*72.0},
+                                             'city_county' : {'x' : 2.5*72.0, 'y' : 8.2*72.0},
+                                             'number_in_household' : {'x' : 4.5*72.0, 'y' : 7.95*72.0},
                                              'fns_Yes' : {'x' : 3.4*72.0, 'y' : 7.42*72.0},
                                              'fns_No' : {'x' : 4.27*72.0, 'y' : 7.42*72.0},
                                              'income' : {'x' : 3.5*72.0, 'y' : 7.0*72.0},
-                                             'authorized_representative_1' : {'x' : 2.5*72.0, 'y' : 6.2*72.0},
-                                             'authorized_representative_2' : {'x' : 2.5*72.0, 'y' : 5.8*72.0},
-                                             'guest_ID' : {'x' : 6.0*72.0, 'y' : 0.7*72.0}},
+                                             'authorized_representative_1' : {'x' : 2.5*72.0, 'y' : 6.3*72.0},
+                                             'authorized_representative_2' : {'x' : 2.5*72.0, 'y' : 5.9*72.0},
+                                             'guest_ID' : {'x' : 6.0*72.0, 'y' : 0.7*72.0},
+                                             'proxy_signature_date' : {'x' : 6.7*72.0, 'y' : 5.4*72.0},
+                                             'proxy_signature' : {'x' : 3.0*72.0, 'y' : 5.4*72.0}},
                 '2024-2025 Spanish Front' : {'base_pdf' : 'guestbook_sign_in/tefap_pdfs/2024-2025 Spanish Front.pdf',
-                                             'name' : {'x' : 3.0*72.0, 'y' : 10.0*72.0},
-                                             'address' : {'x' : 3.0*72.0, 'y' : 9.76*72.0},
-                                             'city' : {'x' : 3.0*72.0, 'y' : 9.54*72.0},
-                                             'county' : {'x' : 3.0*72.0, 'y' : 9.32*72.0},
-                                             'number_in_household' : {'x' : 3.0*72.0, 'y' : 9.10*72.0},
+                                             'name' : {'x' : 3.0*72.0, 'y' : 10.22*72.0},
+                                             'address' : {'x' : 3.0*72.0, 'y' : 10.0*72.0},
+                                             'city' : {'x' : 3.0*72.0, 'y' : 9.76*72.0},
+                                             'county' : {'x' : 3.0*72.0, 'y' : 9.54*72.0},
+                                             'number_in_household' : {'x' : 3.0*72.0, 'y' : 9.32*72.0},
                                              'authorized_representative_1' : {'x' : 3.3*72.0, 'y' : 3.3*72.0},
                                              'authorized_representative_2' : {'x' : 3.3*72.0, 'y' : 2.95*72.0},
                                              'front_signature' : {'x' : 1.0*72.0, 'y' : 2.6*72.0},
                                              'date' : {'x' : 3.2*72.0, 'y' : 2.6*72.0},
                                              'guest_ID' : {'x' : 6.0*72.0, 'y' : 0.7*72.0}},
                 '2024-2025 Spanish Proxy' : {'base_pdf' : 'guestbook_sign_in/tefap_pdfs/2024-2025 Spanish Proxy.pdf',
-                                             'care_center' : {'x' : 5.8*72.0, 'y' : 9.2*72.0},
-                                             'name' : {'x' : 2.5*72.0, 'y' : 8.9*72.0},
-                                             'address' : {'x' : 2.5*72.0, 'y' : 8.6*72.0},
-                                             'city_county' : {'x' : 5.5*72.0, 'y' : 8.6*72.0},
-                                             'number_in_household' : {'x' : 4.8*72.0, 'y' : 8.3*72.0},
-                                             'fns_Yes' : {'x' : 5.3*72.0, 'y' : 8.05*72.0},
-                                             'fns_No' : {'x' : 5.3*72.0, 'y' : 8.05*72.0},
-                                             'income' : {'x' : 3.5*72.0, 'y' : 7.75*72.0},
-                                             'authorized_representative_1' : {'x' : 3.5*72.0, 'y' : 7.2*72.0},
-                                             'authorized_representative_2' : {'x' : 3.5*72.0, 'y' : 6.9*72.0},
-                                             'guest_ID' : {'x' : 6.0*72.0, 'y' : 1.0*72.0}}
+                                             'care_center' : {'x' : 5.8*72.0, 'y' : 9.4*72.0},
+                                             'name' : {'x' : 2.5*72.0, 'y' : 9.1*72.0},
+                                             'address' : {'x' : 2.5*72.0, 'y' : 8.8*72.0},
+                                             'city_county' : {'x' : 5.5*72.0, 'y' : 8.8*72.0},
+                                             'number_in_household' : {'x' : 4.8*72.0, 'y' : 8.5*72.0},
+                                             'fns_Yes' : {'x' : 5.3*72.0, 'y' : 8.15*72.0},
+                                             'fns_No' : {'x' : 5.3*72.0, 'y' : 8.15*72.0},
+                                             'income' : {'x' : 3.5*72.0, 'y' : 7.85*72.0},
+                                             'authorized_representative_1' : {'x' : 3.5*72.0, 'y' : 7.25*72.0},
+                                             'authorized_representative_2' : {'x' : 3.5*72.0, 'y' : 6.95*72.0},
+                                             'guest_ID' : {'x' : 6.0*72.0, 'y' : 1.0*72.0},
+                                             'proxy_signature_date' : {'x' : 6.9*72.0, 'y' : 6.7*72.0},
+                                             'proxy_signature' : {'x' : 2.0*72.0, 'y' : 6.5*72.0},
+                                             }
 }
 
 def TEFAP_back_page_dims(w):
@@ -64,23 +69,23 @@ def TEFAP_back_page_dims(w):
     '''
     overlay_dims = {
         '2024-2025 English Back' : {'base_pdf' : 'guestbook_sign_in/tefap_pdfs/2024-2025 English Back.pdf',
-                                    'date' : {'x' : 0.97*72.0, 'y' : 8.95*72.0 - w*0.3427*72.0},
-                                    'client_signature' : {'x' : 1.4*72.0, 'y' : 8.95*72.0 - w*0.3427*72.0},
-                                    'fns_Yes' : {'x' : 3.34*72.0, 'y' : 8.95*72.0 - w*0.3427*72.0},
-                                    'fns_No' :  {'x' : 3.72*72.0, 'y' : 8.95*72.0 - w*0.3427*72.0},
-                                    'yearly_income' : {'x' : 4.0*72.0, 'y' : 8.95*72.0 - w*0.3427*72.0},
-                                    'monthly_income' : {'x' : 5.0*72.0, 'y' : 8.95*72.0 - w*0.3427*72.0},
-                                    'weekly_income' : {'x' : 5.86*72.0, 'y' : 8.95*72.0 - w*0.3427*72.0},
-                                    'agency_representative_signature' : {'x' : 6.3*72.0, 'y' : 8.95*72.0 - w*0.3427*72.0}},
+                                    'date' : {'x' : 0.97*72.0, 'y' : 9.05*72.0 - w*0.3427*72.0},
+                                    'client_signature' : {'x' : 1.7*72.0, 'y' : 9.05*72.0 - w*0.3427*72.0},
+                                    'fns_Yes' : {'x' : 3.34*72.0, 'y' : 9.05*72.0 - w*0.3427*72.0},
+                                    'fns_No' :  {'x' : 3.72*72.0, 'y' : 9.05*72.0 - w*0.3427*72.0},
+                                    'yearly_income' : {'x' : 4.0*72.0, 'y' : 9.05*72.0 - w*0.3427*72.0},
+                                    'monthly_income' : {'x' : 5.1*72.0, 'y' : 9.05*72.0 - w*0.3427*72.0},
+                                    'weekly_income' : {'x' : 5.86*72.0, 'y' : 9.05*72.0 - w*0.3427*72.0},
+                                    'agency_representative_signature' : {'x' : 6.9*72.0, 'y' : 9.05*72.0 - w*0.3427*72.0}},
         '2024-2025 Spanish Back' : {'base_pdf' : 'guestbook_sign_in/tefap_pdfs/2024-2025 Spanish Back.pdf',
-                                    'date' : {'x' : 0.87*72.0, 'y' : 8.58*72.0 - w*0.3427*72.0},
-                                    'client_signature' : {'x' : 1.4*72.0, 'y' : 8.58*72.0 - w*0.3427*72.0},
-                                    'fns_Yes' : {'x' : 3.2*72.0, 'y' : 8.58*72.0 - w*0.3427*72.0},
-                                    'fns_No' : {'x' : 3.58*72.0, 'y' : 8.58*72.0 - w*0.3427*72.0},
-                                    'yearly_income' : {'x' : 3.85*72.0, 'y' : 8.58*72.0 - w*0.3427*72.0},
-                                    'monthly_income' : {'x' : 4.85*72.0, 'y' : 8.58*72.0 - w*0.3427*72.0},
-                                    'weekly_income' : {'x' : 5.67*72.0, 'y' : 8.58*72.0 - w*0.3427*72.0},
-                                    'agency_representative_signature' : {'x' : 6.3*72.0, 'y' : 8.58*72.0 - w*0.3427*72.0}}
+                                    'date' : {'x' : 0.82*72.0, 'y' : 8.8*72.0 - w*0.3427*72.0},
+                                    'client_signature' : {'x' : 1.5*72.0, 'y' : 8.8*72.0 - w*0.3427*72.0},
+                                    'fns_Yes' : {'x' : 3.2*72.0, 'y' : 8.8*72.0 - w*0.3427*72.0},
+                                    'fns_No' : {'x' : 3.58*72.0, 'y' : 8.8*72.0 - w*0.3427*72.0},
+                                    'yearly_income' : {'x' : 3.85*72.0, 'y' : 8.8*72.0 - w*0.3427*72.0},
+                                    'monthly_income' : {'x' : 4.9*72.0, 'y' : 8.8*72.0 - w*0.3427*72.0},
+                                    'weekly_income' : {'x' : 5.67*72.0, 'y' : 8.8*72.0 - w*0.3427*72.0},
+                                    'agency_representative_signature' : {'x' : 6.5*72.0, 'y' : 8.8*72.0 - w*0.3427*72.0}}
     }
     return overlay_dims
 
@@ -244,13 +249,9 @@ def make_tefap_proxy_overlay(internal_id):
     c.drawString(OVERLAY_DIMS[lookup]['number_in_household']['x'], OVERLAY_DIMS[lookup]['number_in_household']['y'], f"{params['number_in_household']}")
     c.drawString(OVERLAY_DIMS[lookup]['fns_Yes']['x'], OVERLAY_DIMS[lookup]['fns_Yes']['y'], f"{'X (Yes)' if params['fns'] == 'Yes' else ''}")
     c.drawString(OVERLAY_DIMS[lookup]['fns_No']['x'], OVERLAY_DIMS[lookup]['fns_No']['y'], f"{'X (No)' if params['fns'] == 'No' else ''}")
-    if params['fns'] == 'No':
-        if params['monthly_income'] not in ['', None]:
-            income = f"{params['monthly_income']} (Monthly)"
-        elif guest['yearly_income'] not in ['', None]:
-            income = f"{params['yearly_income']} (Annual)"
-        else:
-            income = f"{params['weekly_income']} (Weekly)"
+
+    if params['monthly_income'] not in ['', None]:
+        income = f"{params['monthly_income']} (Monthly)"
         c.drawString(OVERLAY_DIMS[lookup]['income']['x'], OVERLAY_DIMS[lookup]['income']['y'], income) 
 
     if params['authorized_representative_1'] not in ['', None]: c.drawString(OVERLAY_DIMS[lookup]['authorized_representative_1']['x'], 
@@ -259,6 +260,15 @@ def make_tefap_proxy_overlay(internal_id):
     if params['authorized_representative_2'] not in ['', None]: c.drawString(OVERLAY_DIMS[lookup]['authorized_representative_2']['x'], 
                                                                             OVERLAY_DIMS[lookup]['authorized_representative_2']['y'], 
                                                                             f"{params['authorized_representative_2']}")
+    if params['proxy_signature'] not in [None, '']:
+        proxy_signature = draw_signature(json.loads(params['proxy_signature'].replace("'",'"')), as_file = True)
+        c.drawImage(proxy_signature, 
+                    x = OVERLAY_DIMS[lookup]['proxy_signature']['x'], 
+                    y = OVERLAY_DIMS[lookup]['proxy_signature']['y'], 
+                    height = 0.5*72.0, 
+                    mask = 'auto')
+    c.drawString(OVERLAY_DIMS[lookup]['proxy_signature_date']['x'], OVERLAY_DIMS[lookup]['proxy_signature_date']['y'], f"{params['proxy_signature_date']}")
+
     c.setFont(psfontname = 'Courier', size = 30.0)
     c.drawString(OVERLAY_DIMS[lookup]['guest_ID']['x'], OVERLAY_DIMS[lookup]['guest_ID']['y'], f"{params['guest_ID']}")      
     c.save()        

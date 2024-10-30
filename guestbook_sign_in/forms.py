@@ -69,7 +69,7 @@ class SearchBar(forms.Form):
     name_search = forms.CharField(required = False, strip = True, max_length = 256)
 
 class LinkedProxyInput(forms.Form):
-    fns = forms.ChoiceField(choices=[('yes', 'Yes'), ('no', 'No')], widget=forms.Select, required=True)
+    fns = forms.ChoiceField(choices=[('Yes', 'Yes'), ('No', 'No')], widget=forms.Select, required=True)
     monthly_income = forms.IntegerField(required = True, min_value = 0, max_value = 9999999)
     proxy_signature = JSignatureField(required = True, widget=JSignatureWidget(jsignature_attrs = {'background-color' : '#d9ecea'}))
 
