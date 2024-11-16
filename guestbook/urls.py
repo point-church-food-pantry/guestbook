@@ -36,7 +36,13 @@ urlpatterns = [
     
     path('accounts/login/', allauthbase.LoginView.as_view(), name = 'account_login'), 
     path('accounts/logout/', allauthbase.LogoutView.as_view(), name = 'account_logout'),
-    path('accounts/signup/', allauthbase.SignupView.as_view(), name = 'account_signup'),
+
+    # LEAVE SIGNUPS DISABLED! They allow an arbitrary user to register for an account and access the database.
+    # path('accounts/signup/', allauthbase.SignupView.as_view(), name = 'account_signup'), 
+    
+    # Duplicating the login page is an extremely hacky workaround so that AllAuth doesn't throw a fit about accout_signup not existing.
+    path('accounts/login/', allauthbase.LoginView.as_view(), name = 'account_signup'),
+
     path('accounts/reauthenticate/', allauthbase.ReauthenticateView.as_view(), name="account_reauthenticate"),
     path('accounts/2fa/', mfa.IndexView.as_view(), name = 'mfa_index'),
     path('accounts/2fa/authenticate/', mfa.AuthenticateView.as_view(), name='mfa_authenticate'),
