@@ -19,7 +19,7 @@ class Guest(models.Model):
     number_in_household = models.BigIntegerField(blank = True, null = True)
     authorized_representative_1 = models.CharField(max_length = 256, blank = True, null = True)
     authorized_representative_2 = models.CharField(max_length = 256, blank = True, null = True)
-    tefap_signature_date = models.DateField(auto_now=False, auto_now_add=False)
+    tefap_signature_date = models.DateField(auto_now=False, auto_now_add=False, blank = True, null = True)
     tefap_signature = models.TextField(blank = True, null = True)
     language_preference = models.CharField(max_length = 256, blank = True, null = True)
     year = models.CharField(max_length = 256, blank = True, null = True)
@@ -36,7 +36,7 @@ class LinkedProxy(models.Model):
     valid = models.BooleanField(blank = True, null = True)
     fns = models.CharField(max_length = 256, blank = True, null = True)
     monthly_income = models.CharField(max_length = 256, blank = True, null = True)
-    proxy_signature_date = models.DateField(auto_now=False, auto_now_add=False)
+    proxy_signature_date = models.DateField(auto_now=False, auto_now_add=False, blank = True, null = True)
     proxy_signature = models.TextField(blank = True, null = True)
     notes = models.TextField(blank = True, null = True)
 
@@ -62,7 +62,7 @@ class UnlinkedProxy(models.Model):
     monthly_income = models.CharField(max_length = 256, blank = True, null = True)
     authorized_representative_1 = models.CharField(max_length = 256, blank = True, null = True)
     authorized_representative_2 = models.CharField(max_length = 256, blank = True, null = True)
-    proxy_signature_date = models.DateField(auto_now=False, auto_now_add=False)
+    proxy_signature_date = models.DateField(auto_now=False, auto_now_add=False, blank = True, null = True)
     proxy_signature = models.TextField(blank = True, null = True)
     guest_bestguess = models.CharField(max_length = 256, blank = True, null = True) # Client can input guest ID if they remember it
     notes = models.TextField(blank = True, null = True)
