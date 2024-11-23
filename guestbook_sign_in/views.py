@@ -126,7 +126,11 @@ def linked_proxy_form(request, language, internal_ID, guest_ID):
                                            proxy_signature_date = date.today(),
                                            proxy_signature = form.cleaned_data['proxy_signature'])
             new_linked_proxy.save()
-            return HttpResponseRedirect(reverse('new_guest_created', kwargs = {'guest_ID' : guest_ID}))
+
+            if request.user.is_authenticated:
+                return HttpResponseRedirect(reverse('weekly_signatures', kwargs = {'language' : language, 'guest_ID' : guest_ID}))
+            else:
+                return HttpResponseRedirect(reverse('new_guest_created', kwargs = {'guest_ID' : guest_ID}))
     else:
         form = LinkedProxyInput()
 
