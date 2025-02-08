@@ -18,6 +18,7 @@ urlpatterns = [
     path('generate_report', views.generate_report, name = 'generate_report'),
     path('generate_report/database', views.generate_report_database, name = 'generate_report_database'),
     path('generate_report/pdf', views.generate_report_pdf, name = 'generate_report_pdf'),
+    path('generate_report/alpha_list', views.generate_alpha_list, name = 'generate_alpha_list'),
 ]
 
 if settings.DEBUG == True:

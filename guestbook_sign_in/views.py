@@ -15,6 +15,7 @@ import json
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
 from jsignature.utils import draw_signature
+from .support_functions import make_all_report_pdfs
 
 ### Views ###
 
@@ -427,17 +428,22 @@ def generate_report_database(request):
     response = FileResponse(buffer, as_attachment = True, filename = 'database.xlsx') 
     return response
 
-from .support_functions import make_all_report_pdfs
 @login_required
 def generate_report_pdf(request):
+    '''
+    Create TEFAP forms and proxy forms for all guests.
+    '''
     return make_all_report_pdfs()
 
+@login_required
+def generate_alpha_list(request):
+    '''
+    Create list of all guests with guest ID, first name, and last name in PDF format.
+    '''
+    guests = pd.DataFrame(Guest.objects.values())
+    guests = guests[['valid', 'guest_ID', 'first_name', 'last_name']].sort_values(
+            by = ['valid', 'last_name', 'first_name', 'guest_ID'], 
+            ascending = [False, True, True, True]).to_dict(orient = 'records')
+    context = {'guests' : guests}
+    return render(request, 'generate_alpha_list.html', context = context)
 
-
-
-
-    
-    
-    
-    
-    

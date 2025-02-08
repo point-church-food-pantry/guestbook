@@ -41,7 +41,7 @@ class LinkedProxy(models.Model):
     notes = models.TextField(blank = True, null = True)
 
     def __str__(self):
-        return f"{str(self.internal_ID).split("(")[0]} ({self.id})"
+        return f"{str(self.internal_ID).split('(')[0]} ({self.id})"
 
 class UnlinkedProxy(models.Model):
     '''
@@ -68,7 +68,7 @@ class UnlinkedProxy(models.Model):
     notes = models.TextField(blank = True, null = True)
 
     def __str__(self):
-        return f"{str(self.internal_ID).split("(")[0]} ({self.id})"
+        return f"{str(self.internal_ID).split('(')[0]} ({self.id})"
 
 class SignIn(models.Model):
     '''
@@ -89,7 +89,7 @@ class SignIn(models.Model):
     notes = models.TextField(blank = True, null = True)
 
     def __str__(self):
-        return f"{str(self.internal_ID).split("(")[0]} {self.date} ({self.id})"
+        return f"{str(self.internal_ID).split('(')[0]} {self.date} ({self.id})"
 
 
 
