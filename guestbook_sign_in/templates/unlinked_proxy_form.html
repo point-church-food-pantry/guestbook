@@ -24,22 +24,13 @@
                 <a href="{% url 'unlinked_proxy' %}"><button class="nav-button">Fill Proxy Form</button></a>
                 <a href="{% url 'generate_report' %}"><button class="nav-button">Generate Report</button></a>
             </div>
-            <script>
-                function toggleDivs(hideDivId, showDivId) {
-                    document.getElementById(hideDivId).style.display = 'none';  // Hide the first div
-                    document.getElementById(showDivId).style.display = 'block'; // Show the second div
-                }
-            </script>
             <div class="full-width">
-                <button class="mini-button" onclick="toggleDivs('spanish_proxy', 'english_proxy')">English</button>
-                <button class="mini-button" onclick="toggleDivs('english_proxy', 'spanish_proxy')">Español</button>
+                <button id='english_selector' class="mini-button">English</button>
+                <button id='spanish_selector' class="mini-button">Español</button>
             </div>
             {{ form.media }}
-            <div id="english_proxy" class="tile-container vertical" style="display: none;">
-                <h4>North Carolina Department of Agriculture and Consumer Services</h4>
-                <h4>Food Distribution Division</h4>
-                <h4>THE EMERGENCY FOOD ASSISTANCE PROGRAM (TEFAP) PROXY AUTHORIZATION</h4>
-                <h4><mark>Revised</mark></h4>
+            <div id="proxy" class="tile-container vertical">
+                <div id='title'></div>
                 <div class="form-container">
                     <form action="" method="post">
                     {% csrf_token %}
@@ -47,7 +38,7 @@
                             <table class="table">
                                 <tbody>
                                     <tr>
-                                        <th>Guest ID (Optional - only if you know it)</th>
+                                        <th id="guest_bestguess"></th>
                                         <td>{{ form.guest_bestguess }}</td>
                                     </tr>
                                 </tbody>
@@ -55,194 +46,222 @@
                             <table class="table">
                                 <tbody>
                                     <tr>
-                                        <th>Name of Food Bank/Food Pantry/Distribution Site:</th>
+                                        <th id="distribution_site"></th>
                                         <td>Carolina Care Pantry</td>
                                     </tr>
                                     <tr>
-                                        <th>Participant's First Name:</th>
+                                        <th id="first_name"></th>
                                         <td>{{ form.first_name }}</td>
                                     </tr>
                                     <tr>
-                                        <th>Participant's Last Name:</th>
+                                        <th id="last_name"></th>
                                         <td>{{ form.last_name}}</td>
                                     </tr>
                                     <tr>
-                                        <th>Participant's Address:</th>
+                                        <th id="address"></th>
                                         <td>{{ form.address }}</td>
                                     </tr>
                                     <tr>
-                                        <th>City:</th>
+                                        <th id="city"></th>
                                         <td>{{ form.city }}</td>
                                     </tr>
                                     <tr>
-                                        <th>County:</th>
+                                        <th id="county"></th>
                                         <td>{{ form.county }}</td>
                                     </tr>
                                     <tr>
-                                        <th>Number of people living in participant's household:</th>
+                                        <th id="num_in_hh"></th>
                                         <td>{{ form.number_in_household }}</td>
                                     </tr>
                                     <tr>
-                                        <th>Does participant recieve FNS benefits?</th>
+                                        <th id="fns"></th>
                                         <td>{{ form.fns }}</td>
                                     </tr>
                                     <tr>
-                                        <th>Household monthly gross income: $</th>
+                                        <th id="monthly_income"></th>
                                         <td>{{ form.monthly_income }}</td>
                                     </tr>
                                 </tbody>
                             </table>
-                            <h4>I authorize the following person(s) to pick up food for me from this TEFAP distribution site:</h4>
+                            <h4 id="authorization"></h4>
                             <table class="table">
                                 <tbody>
                                     <tr>
-                                        <th>Proxy full name</th>
+                                        <th id="proxy_name_1"></th>
                                         <td>{{ form.authorized_representative_1 }}</td>
                                     </tr>
                                     <tr>
-                                        <th>Proxy full name</th>
+                                        <th id="proxy_name_2"></th>
                                         <td>{{ form.authorized_representative_2 }}</td>
                                     </tr>
                                     <tr>
-                                        <th>Participant Signature:</th>
+                                        <th id="participant_signature"></th>
                                         <td>{{ form.proxy_signature }}</td>
                                     </tr>
                                     <tr>
-                                        <th>Date:</th>
+                                        <th id="date"></th>
                                         <td>{{ today }}</td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
-                        <button type="submit">Submit</button>
+                        <button id="submit_button" type="submit"></button>
                     </form>
                 </div>
-                <p>PROXY AUTHORIZATION PERIOD IS VALID OCTOBER 1ST-SEPTEMBER 30TH AND MUST BE RENEWED ANNUALLY WITH THE UPDATED INCOME ELIGIBLITY GUIDELINES</p>
-                <p>TEFAP participants can update their information and/or change their designated proxies anytime during the year.</p>
-                <p>In accordance with federal civil rights law and U.S. Department of Agriculture (USDA) civil rights regulations and policies,
-                this institution is prohibited from discriminating on the basis of race, color, national origin, sex (including gender identity
-                and sexual orientation), disability, age, or reprisal or retaliation for prior civil rights activity.</p>
-                <p>Program information may be made available in languages other than English. Persons with disabilities who require
-                alternative means of communication to obtain program information (e.g., Braille, large print, audiotape, American Sign
-                Language), should contact the responsible state or local agency that administers the program or USDA’s TARGET Center
-                at (202) 720-2600 (voice and TTY) or contact USDA through the Federal Relay Service at (800) 877-8339.</p>
-                <p>To file a program discrimination complaint, a Complainant should complete a Form AD-3027, USDA Program Discrimination Complaint Form which can 
-                be obtained online at: <u>https://www.usda.gov/sites/default/files/documents/USDA-OASCR%20P-Complaint-Form-0508-0002-508-11-28-17Fax2Mail.pdf</u>, 
-                from any USDA office, by calling (866) 632-9992, or by writing a letter addressed to USDA. The letter must contain the complainant’s name, address, 
-                telephone number, and a written description of the alleged discriminatory action in sufficient detail to inform the Assistant Secretary for Civil 
-                Rights (ASCR) about the nature and date of an alleged civil rights violation. The completed AD-3027 form or letter must be submitted to USDA by: 
-                1.<b>mail:</b> U.S. Department of Agriculture, Office of the Assistant Secretary for Civil Rights, 1400 Independence Avenue, SW, Washington, D.C. 
-                20250-9410; or 2. <b>fax:</b> (833) 256-1665 or (202) 690-7442; or 3. <b>email:</b> <u>program.intake@usda.gov</u>This institution is an equal
-                opportunity provider.</p>
-                <p>07 TEFAP Proxy Authorization Form September 2023_Revised Nondiscrimination Statement September 2023</p>
-            </div>
-
-            <div id="spanish_proxy" class="tile-container vertical" style="display: none;">
-                <h4>División de Distribución de Alimentos del Departamento de Agricultura y Servicios</h4>
-                <h4>al Consumidor de Carolina del Norte</h4>
-                <h4>LA AUTORIZACIÓN PARA UN REPRESENTANTE DEL PROGRAMA DE ASISTENCIA ALIMENTARIA DE EMERGENCIA (TEFAP)</h4>
-                <div class="form-container">
-                    <form action="" method="post">
-                    {% csrf_token %}
-                        <div class="table-container">
-                            <table class="table">
-                                <tbody>
-                                    <tr>
-                                        <th>Número de identificación (si se conoce)</th>
-                                        <td>{{ form.guest_bestguess }}</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <table class="table">
-                                <tbody>
-                                    <tr>
-                                        <th>Nombre del banco de alimentos/despensa de alimentos/centro de distribución:</th>
-                                        <td>Carolina Care Pantry</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Nombre del participante:</th>
-                                        <td>{{ form.first_name }}</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Apellido del participante:</th>
-                                        <td>{{ form.last_name}}</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Dirección del participante:</th>
-                                        <td>{{ form.address }}</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Ciudad del participante:</th>
-                                        <td>{{ form.city }}</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Condado del participante:</th>
-                                        <td>{{ form.county }}</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Cantidad de personas que viven en el hogar del participante:</th>
-                                        <td>{{ form.number_in_household }}</td>
-                                    </tr>
-                                    <tr>
-                                        <th>¿El participante recibe beneficios de FNS?</th>
-                                        <td>{{ form.fns }}</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Ingreso bruto mensual del hogar: $</th>
-                                        <td>{{ form.monthly_income }}</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <br>
-                            <div class="full-width">
-                                <h4>Autorizo a la siguiente persona(s) a recoger alimentos por mí en este centro de distribución del TEFAP:</h4>
-                            </div>
-                            <table class="table">
-                                <tbody>
-                                    <tr>
-                                        <th>Nombre completo del representante:</th>
-                                        <td>{{ form.authorized_representative_1 }}</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Nombre completo del representante:</th>
-                                        <td>{{ form.authorized_representative_2 }}</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Firma del participante:</th>
-                                        <td>{{ form.proxy_signature }}</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Fecha:</th>
-                                        <td>{{ today }}</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <button type="submit">Submit</button>
-                    </form>
-                </div>
-                <p>*EL PERÍODO DE AUTORIZACIÓN DEL REPRESENTANTE ES VÁLIDO DEL 1 DE OCTUBRE AL 30 DE SEPTIEMBRE Y DEBE RENOVARSE ANUALMENTE CON LAS PAUTAS ACTUALIZADAS DE ELEGIBILIDAD DE INGRESOS*</p>
-                
-                <p>Los participantes del TEFAP pueden actualizar su información o cambiar su(s) representante/representantes designados en cualquier momento durante el año.</p>
-
-                <p>De acuerdo con la ley federal de derechos civiles y las reglamentaciones y políticas de derechos civiles del Departamento de Agricultura de los EE. UU. (USDA), esta institución tiene prohibido discriminar por motivos de raza, color, nacionalidad, sexo (incluida la identidad de género y orientación sexual), discapacidad, edad o represalias por actividades previas de derechos civiles.</p>
-
-                <p>La información del programa puede estar disponible en otros idiomas que no sean inglés. Las personas con discapacidades que requieran medios alternativos de comunicación para obtener información del programa (p. ej., Braille, letra grande, cinta de audio, lenguaje de señas estadounidense) deben comunicarse con la agencia estatal o local responsable que administra el programa o el Centro TARGET del USDA al (202) 720-2600 (voz y TTY) o comunicarse con el USDA a través del Servicio Federal de Retransmisión al (800) 877-8339.</p>
-                
-                <p>Para presentar una queja por discriminación en el programa, un reclamante debe completar un Formulario AD-3027, Formulario de queja por discriminación en el programa del USDA, que puede obtenerse en línea en: 
-                https://www.usda.gov/sites/default/files/documents/USDA-OASCR%20P-Complaint-Form-0508-0002-508-11-28-17Fax2Mail.pdf, desde cualquier oficina del USDA, llamando al (866) 632-9992 o escribiendo una carta dirigida al USDA. La carta debe contener el nombre, la dirección, el número de teléfono del reclamante y una descripción escrita de la presunta acción discriminatoria con suficiente detalle para informar al subsecretario de Derechos Civiles (Assistant Secretary for Civil Rights, ASCR) sobre la naturaleza y la fecha de una presunta violación de los derechos civiles. El formulario AD-3027 completado o la carta deben
-                enviarse al USDA por correo postal:</p>
-
-                <p>(1) Correo: Departamento de Agricultura de los EE. UU., Oficina del Subsecretario de Derechos Civiles, 1400 Independence Avenue, SW, Washington, D.C. 20250-9410;</p>
-
-                <p>(2) Fax: (833) 256-1665 o (202) 690-7442</p>
-
-                <p>(3) (3) Correo electrónico: program.intake@usda.gov</p>
-
-                <p>Esta institución es un proveedor que ofrece igualdad de oportunidades.</p>
-
-                <p>07 TEFAP Proxy Authorization Form March 2022.Docx 22 de marzo</p>
+                <div id="end_text"></div>
             </div>
         </div>
+        <script>
+            const textSnippets = {
+                'title' : {
+                    'english' : `
+                        <h4>North Carolina Department of Agriculture and Consumer Services</h4>
+                        <h4>Food Distribution Division</h4>
+                        <h4>THE EMERGENCY FOOD ASSISTANCE PROGRAM (TEFAP) PROXY AUTHORIZATION</h4>
+                        <h4><mark>Revised</mark></h4>`,
+                    'spanish' : `
+                        <h4>División de Distribución de Alimentos del Departamento de Agricultura y Servicios</h4>
+                        <h4>al Consumidor de Carolina del Norte</h4>
+                        <h4>LA AUTORIZACIÓN PARA UN REPRESENTANTE DEL PROGRAMA DE ASISTENCIA ALIMENTARIA DE EMERGENCIA (TEFAP)</h4>`
+                },
+                'guest_bestguess' : {
+                    'english' : 'Guest ID (Optional - only if you know it)',
+                    'spanish' : 'Número de identificación (si se conoce)'
+                },
+                'distribution_site' : {
+                    'english' : 'Name of Food Bank/Food Pantry/Distribution Site:',
+                    'spanish' : 'Nombre del banco de alimentos/despensa de alimentos/centro de distribución:'
+                },
+                'first_name' : {
+                    'english' : "Participant's First Name:",
+                    'spanish' : "Nombre del participante:"
+                },
+                'last_name' : {
+                    'english' : "Participant's Last Name:",
+                    'spanish' : "Apellido del participante:"
+                },
+                'address' : {
+                    'english' : "Participant's Address:",
+                    'spanish' : "Dirección del participante:"
+                },
+                'city' : {
+                    'english' : 'City:',
+                    'spanish' : 'Ciudad del participante:'
+                },
+                'county' : {
+                    'english' : 'County:',
+                    'spanish' : 'Condado del participante:'
+                },
+                'num_in_hh' : {
+                    'english' : "Number of people living in participant's household:",
+                    'spanish' : 'Cantidad de personas que viven en el hogar del participante:'
+                },
+                'fns' : {
+                    'english' : 'Does participant recieve FNS benefits?',
+                    'spanish' : '¿El participante recibe beneficios de FNS?'
+                },
+                'monthly_income' : {
+                    'english' : 'Household monthly gross income: $',
+                    'spanish' : 'Ingreso bruto mensual del hogar:'
+                },
+                'authorization' : {
+                    'english' : 'I authorize the following person(s) to pick up food for me from this TEFAP distribution site:',
+                    'spanish' : "Autorizo a la siguiente persona(s) a recoger alimentos por mí en este centro de distribución del TEFAP:"
+                },
+                'proxy_name_1' : {
+                    'english' : 'Proxy full name',
+                    'spanish' : 'Nombre completo del representante:'
+                },
+                'proxy_name_2' : {
+                    'english' : 'Proxy full name',
+                    'spanish' : 'Nombre completo del representante:'
+                },
+                'participant_signature' : {
+                    'english' : 'Participant Signature:',
+                    'spanish' : 'Firma del participante:'
+                },
+                'date' : {
+                    'english' : 'Date:',
+                    'spanish' : 'Fecha:'
+                },
+                'submit_button' : {
+                    'english' : 'Submit',
+                    'spanish' : 'Submit'
+                },
+                'end_text' : {
+                    'english' : `
+                        <p>PROXY AUTHORIZATION PERIOD IS VALID OCTOBER 1ST-SEPTEMBER 30TH AND MUST BE RENEWED ANNUALLY WITH THE UPDATED INCOME ELIGIBLITY GUIDELINES</p>
+                        <p>TEFAP participants can update their information and/or change their designated proxies anytime during the year.</p>
+                        <p>In accordance with federal civil rights law and U.S. Department of Agriculture (USDA) civil rights regulations and policies,
+                        this institution is prohibited from discriminating on the basis of race, color, national origin, sex (including gender identity
+                        and sexual orientation), disability, age, or reprisal or retaliation for prior civil rights activity.</p>
+                        <p>Program information may be made available in languages other than English. Persons with disabilities who require
+                        alternative means of communication to obtain program information (e.g., Braille, large print, audiotape, American Sign
+                        Language), should contact the responsible state or local agency that administers the program or USDA’s TARGET Center
+                        at (202) 720-2600 (voice and TTY) or contact USDA through the Federal Relay Service at (800) 877-8339.</p>
+                        <p>To file a program discrimination complaint, a Complainant should complete a Form AD-3027, USDA Program Discrimination Complaint Form which can 
+                        be obtained online at: <u>https://www.usda.gov/sites/default/files/documents/USDA-OASCR%20P-Complaint-Form-0508-0002-508-11-28-17Fax2Mail.pdf</u>, 
+                        from any USDA office, by calling (866) 632-9992, or by writing a letter addressed to USDA. The letter must contain the complainant’s name, address, 
+                        telephone number, and a written description of the alleged discriminatory action in sufficient detail to inform the Assistant Secretary for Civil 
+                        Rights (ASCR) about the nature and date of an alleged civil rights violation. The completed AD-3027 form or letter must be submitted to USDA by: 
+                        1.<b>mail:</b> U.S. Department of Agriculture, Office of the Assistant Secretary for Civil Rights, 1400 Independence Avenue, SW, Washington, D.C. 
+                        20250-9410; or 2. <b>fax:</b> (833) 256-1665 or (202) 690-7442; or 3. <b>email:</b> <u>program.intake@usda.gov</u>This institution is an equal
+                        opportunity provider.</p>
+                        <p>07 TEFAP Proxy Authorization Form September 2023_Revised Nondiscrimination Statement September 2023</p>`,
+                    'spanish' : `
+                        <p>*EL PERÍODO DE AUTORIZACIÓN DEL REPRESENTANTE ES VÁLIDO DEL 1 DE OCTUBRE AL 30 DE SEPTIEMBRE Y DEBE RENOVARSE ANUALMENTE CON LAS PAUTAS ACTUALIZADAS DE ELEGIBILIDAD DE INGRESOS*</p>
+                        <p>Los participantes del TEFAP pueden actualizar su información o cambiar su(s) representante/representantes designados en cualquier momento durante el año.</p>
+                        <p>De acuerdo con la ley federal de derechos civiles y las reglamentaciones y políticas de derechos civiles del Departamento de Agricultura de los EE. UU. (USDA), esta institución tiene prohibido discriminar por motivos de raza, color, nacionalidad, sexo (incluida la identidad de género y orientación sexual), discapacidad, edad o represalias por actividades previas de derechos civiles.</p>
+                        <p>La información del programa puede estar disponible en otros idiomas que no sean inglés. Las personas con discapacidades que requieran medios alternativos de comunicación para obtener información del programa (p. ej., Braille, letra grande, cinta de audio, lenguaje de señas estadounidense) deben comunicarse con la agencia estatal o local responsable que administra el programa o el Centro TARGET del USDA al (202) 720-2600 (voz y TTY) o comunicarse con el USDA a través del Servicio Federal de Retransmisión al (800) 877-8339.</p>
+                        <p>Para presentar una queja por discriminación en el programa, un reclamante debe completar un Formulario AD-3027, Formulario de queja por discriminación en el programa del USDA, que puede obtenerse en línea en: 
+                        https://www.usda.gov/sites/default/files/documents/USDA-OASCR%20P-Complaint-Form-0508-0002-508-11-28-17Fax2Mail.pdf, desde cualquier oficina del USDA, llamando al (866) 632-9992 o escribiendo una carta dirigida al USDA. La carta debe contener el nombre, la dirección, el número de teléfono del reclamante y una descripción escrita de la presunta acción discriminatoria con suficiente detalle para informar al subsecretario de Derechos Civiles (Assistant Secretary for Civil Rights, ASCR) sobre la naturaleza y la fecha de una presunta violación de los derechos civiles. El formulario AD-3027 completado o la carta deben
+                        enviarse al USDA por correo postal:</p>
+                        <p>(1) Correo: Departamento de Agricultura de los EE. UU., Oficina del Subsecretario de Derechos Civiles, 1400 Independence Avenue, SW, Washington, D.C. 20250-9410;</p>
+                        <p>(2) Fax: (833) 256-1665 o (202) 690-7442</p>
+                        <p>(3) (3) Correo electrónico: program.intake@usda.gov</p>
+                        <p>Esta institución es un proveedor que ofrece igualdad de oportunidades.</p>
+                        <p>07 TEFAP Proxy Authorization Form March 2022.Docx 22 de marzo</p>`
+                }
+            };
+
+            function updateText(language) {
+                for (const key in textSnippets) {
+                    const element = document.getElementById(key); // Get element by ID
+                    if (element) {  // Check if element exists
+                        if (textSnippets[key][language]) { // Check if translation exists
+                            if (key === 'title' || key === 'end_text') { // Set innerHTML for HTML content
+                                element.innerHTML = textSnippets[key][language];
+                            } else {
+                                element.textContent = textSnippets[key][language]; // Set textContent for plain text
+                            }
+                        } else {
+                            console.warn(`Translation for '${key}' in ${language} not found.`);
+                            // Handle missing translation (e.g., display a default message)
+                            if (key === 'title' || key === 'end_text') {
+                                element.innerHTML = "Translation Missing";
+                            } else {
+                                element.textContent = "Translation Missing";
+                            }
+                        }
+                    } else {
+                        console.warn(`Element with ID '${key}' not found.`);
+                    }
+                }
+            }
+
+            document.addEventListener('DOMContentLoaded', () => {
+                // Event listeners for language buttons:
+                const englishButton = document.getElementById('english_selector'); 
+                const spanishButton = document.getElementById('spanish_selector');
+
+                englishButton.addEventListener('click', () => updateText('english'));
+                spanishButton.addEventListener('click', () => updateText('spanish'));
+
+                // Initial language setup (e.g., English by default):
+                updateText('english');
+            })
+        </script>
     </body>
 </html>
+
+
