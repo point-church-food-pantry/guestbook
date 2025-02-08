@@ -443,6 +443,7 @@ def generate_alpha_list(request):
     guests = pd.DataFrame(Guest.objects.values())
     guests = guests[['valid', 'guest_ID', 'first_name', 'last_name']].sort_values(
             by = ['valid', 'last_name', 'first_name', 'guest_ID'], 
+            key = lambda col : col.str.lower() if col.name in ['last_name', 'first_name'] else col,
             ascending = [False, True, True, True]).to_dict(orient = 'records')
     context = {'guests' : guests}
     return render(request, 'generate_alpha_list.html', context = context)
