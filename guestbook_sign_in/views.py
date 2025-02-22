@@ -202,13 +202,26 @@ def weekly_signatures(request, language, guest_ID):
     '''
     current_year = f'{date.today().year - 1}-{date.today().year}' if (date.today().month < 10) else f'{date.today().year}-{date.today().year + 1}'
     guest = Guest.objects.filter(year = current_year).filter(valid = True).get(guest_ID = guest_ID)
+    unlinkedProxy = UnlinkedProxy.objects.filter(internal_ID = guest.internal_ID)
     
     pickup_choices = [(f'{guest.first_name} {guest.last_name}', f'{guest.first_name} {guest.last_name}')]
-    if guest.authorized_representative_1 not in ['', None]:
-        pickup_choices.append((f'{guest.authorized_representative_1}', f'{guest.authorized_representative_1}'))
-    if guest.authorized_representative_2 not in ['', None]:
-        pickup_choices.append((f'{guest.authorized_representative_2}', f'{guest.authorized_representative_2}'))
 
+    # If an unlinked proxy is available, add the proxy names
+    if len(list(unlinkedProxy)) > 0:
+        u = unlinkedProxy.first() # Due to internal ID matching, there will be only one
+        if u.authorized_representative_1 not in ['', None]:
+            pickup_choices.append((f"{u.authorized_representative_1}", f"{u.authorized_representative_1}"))
+        if u.authorized_representative_2 not in ['', None]:
+            pickup_choices.append((f"{u.authorized_representative_2}", f"{u.authorized_representative_2}"))
+
+    # Continue adding proxy names from the original guest account, up to a total of (one account owner + two proxies)
+    if len(pickup_choices) < 3:
+        if guest.authorized_representative_1 not in ['', None]:
+            pickup_choices.append((f'{guest.authorized_representative_1}', f'{guest.authorized_representative_1}'))
+    if len(pickup_choices) < 3:
+        if guest.authorized_representative_2 not in ['', None]:
+            pickup_choices.append((f'{guest.authorized_representative_2}', f'{guest.authorized_representative_2}'))
+    
     if request.method == 'POST':
         form = SignInInput(request.POST)
         form.fields['who_performed_pickup'].choices = pickup_choices
