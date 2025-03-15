@@ -461,3 +461,66 @@ def generate_alpha_list(request):
     context = {'guests' : guests}
     return render(request, 'generate_alpha_list.html', context = context)
 
+@login_required
+def generate_attendance_report(request):
+	'''
+	Generate table of weekly attendance across all weeks in database.
+	'''
+	# Retrieve sign-in data, filter to valid entries
+	all_attendance = pd.DataFrame(SignIn.objects.values())
+	a = all_attendance[all_attendance['valid'] == True][['date', 'tefap_eligible', 'number_in_household']]
+	
+	# If TEFAP eligibility unknown, assume "No"
+	a['tefap_eligible'] = a['tefap_eligible'].fillna("No")
+	
+	# Insert month data
+	d = pd.to_datetime(all_attendance['date']).apply(lambda x : pd.Timestamp(year = x.year, month = x.month, day = 1))
+	a.insert(loc = 0, column = 'month', value = d)
+		
+	# Group by week and month
+	week_attendance = a.groupby(by = ['date', 'tefap_eligible']).agg({'number_in_household' : ['count', 'sum']}).reset_index()
+	week_attendance.columns = 'date', 'tefap_eligible', 'count', 'sum'
+	week_attendance = week_attendance.sort_values(by = 'date')
+	
+	month_attendance = a.groupby(by = ['month', 'tefap_eligible']).agg({'number_in_household' : ['count', 'sum']}).reset_index()
+	month_attendance.columns = 'month', 'tefap_eligible', 'count', 'sum'
+	month_attendance = month_attendance.sort_values(by = 'month')
+	
+	# Helper function to either extract data if it exists from a Pandas dataframe, or return zero if it doesn't
+	def extract(df):
+		if len(df) == 0: return 0
+		else: return int(df.iloc[0])
+	
+	# Helper function to convert a given week or month slice of a dataframe into TEFAP "Not Eligible", "Eligible", and "Total" components
+	def df_slice(df):
+		no_count = extract(df[df['tefap_eligible'] == 'No']['count'])
+		no_sum = extract(df[df['tefap_eligible'] == 'No']['sum'])
+		yes_count = extract(df[df['tefap_eligible'] == 'Yes']['count'])
+		yes_sum = extract(df[df['tefap_eligible'] == 'Yes']['sum'])
+		return {'no_count' : no_count, 'no_sum' : no_sum, 'yes_count' : yes_count, 'yes_sum' : yes_sum, 'total_count' : no_count + yes_count, 'total_sum' : no_sum + yes_sum}
+		
+	# Assemble HTML table. This code needs to be optimized!
+	html_data = []
+	current_month = month_attendance['month'].iloc[0]
+	
+	for week in sorted(week_attendance['date'].unique()):
+		
+		# Check month. If month has changed, print previous month's total before starting new month's weekly data
+		new_month = pd.Timestamp(year = week.year, month = week.month, day = 1)
+				
+		if new_month > current_month:
+			current_month = new_month # Update month counter
+			m = month_attendance[month_attendance['month'] == new_month]
+			s = df_slice(m)
+			html_data.append({'date' : f'{new_month.month_name()} {new_month.year}', 'category' : 'TEFAP Eligible', 'head_count' : s['yes_count'], 'total_people_served' : s['yes_sum']})
+			html_data.append({'date' : f'{new_month.month_name()} {new_month.year}', 'category' : 'Not TEFAP Eligible', 'head_count' : s['no_count'], 'total_people_served' : s['no_sum']})
+			html_data.append({'date' : f'{new_month.month_name()} {new_month.year}', 'category' : 'Total', 'head_count' : s['total_count'], 'total_people_served' : s['total_sum']})
+		
+		# Proceed with extracting week data and sending to HTML table
+		w = week_attendance[week_attendance['date'] == week]
+		s = df_slice(w)
+		html_data.append({'date' : f'{week.strftime("%m-%d-%Y")}', 'category' : 'TEFAP Eligible', 'head_count' : s['yes_count'], 'total_people_served' : s['yes_sum']})
+		html_data.append({'date' : f'{week.strftime("%m-%d-%Y")}', 'category' : 'Not TEFAP Eligible', 'head_count' : s['no_count'], 'total_people_served' : s['no_sum']})
+		html_data.append({'date' : f'{week.strftime("%m-%d-%Y")}', 'category' : 'Total', 'head_count' : s['total_count'], 'total_people_served' : s['total_sum']})
+
+	return render(request, 'generate_attendance_report.html', context = {'html_data' : html_data})
