@@ -25,46 +25,30 @@
             <a href="{% url 'generate_report' %}"><button class="nav-button">Generate Report</button></a>
         </div>
         <div class="full-width">
-            <h3>Attendance Report</h3>
+            <h3>Historical Attendance Report</h3>
         </div>
         <div class="table-container">
             <table class="table">
                 <thead>
                     <tr>
-                        <th>Category</th>
+                        <th>Date</th>
+                        <th>TEFAP Eligible</th>
                         <th>Head Count</th>
-                        <th>New Guests</th>
                         <th>Total People Served</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>TEFAP Eligible</td>
-                        <td>{{ tefap_guests_count }}</td>
-                        <td>{{ new_tefap_guests_count }}</td>
-                        <td>{{ tefap_guests_sum }}</td>
-                    </tr>
-                    <tr>
-                        <td>Not TEFAP Eligible</td>
-                        <td>{{ non_tefap_guests_count }}</td>
-                        <td>{{ new_non_tefap_guests_count }}</td>
-                        <td>{{ non_tefap_guests_sum }}</td>
-                    </tr>
-                    <tr>
-                        <td>Total</td>
-                        <td>{{ total_guests_count }}</td>
-                        <td>{{ new_total_guests_count }}</td>
-                        <td>{{ total_guests_sum }}</td>
-                    </tr>
+                    {% for row in html_data %}  
+                        <tr>
+                            <td>{{ row.date }}</td>
+                            <td>{{ row.category }}</td>
+                            <td>{{ row.head_count }}</td>
+                            <td>{{ row.total_people_served }}</td>
+                        </tr>
+                    {% endfor %}
                 </tbody>
             </table>
         </div>
-        <a class="mini-button" href="{% url 'generate_alpha_list' %}">Generate Alpha List</a>
-		{% if user.is_staff %}
-			<a class="mini-button" href="{% url 'generate_report_database' %}">Download Database</a>
-			<a class="mini-button" href="{% url 'generate_report_pdf' %}">Download PDF</a>
-			<a class="mini-button" href="{% url 'generate_attendance_report' %}">Generate Attendance Report</a>
-		{% endif %}
     </body>
 </html>
 
