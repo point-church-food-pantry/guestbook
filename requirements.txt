@@ -3,7 +3,7 @@ cffi==1.17.1
 chardet==5.2.0
 cryptography==43.0.1
 cssselect==1.2.0
-Django==5.1.6
+Django==5.1.7
 django-allauth==65.0.2
 django-jsignature==0.12
 django-static-jquery==2.1.4
