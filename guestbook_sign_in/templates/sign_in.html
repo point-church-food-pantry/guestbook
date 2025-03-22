@@ -52,8 +52,8 @@
                         <td>{{ gt.first_name }}</td>
                         <td>{{ gt.last_name }}</td>
                         <td>
-                            <a class="mini-button" href="{% url 'weekly_signatures' 'English' gt.guest_ID %}">English</a>
-                            <a class="mini-button" href="{% url 'weekly_signatures' 'Spanish' gt.guest_ID %}">Spanish</a>
+                            <a class="mini-button" href="{% url 'weekly_signatures' 'English' gt.internal_ID %}">English</a>
+                            <a class="mini-button" href="{% url 'weekly_signatures' 'Spanish' gt.internal_ID %}">Spanish</a>
                         </td>
                     </tr>
                     {% endfor %}
