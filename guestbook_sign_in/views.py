@@ -17,6 +17,15 @@ from reportlab.lib.pagesizes import letter
 from jsignature.utils import draw_signature
 from .support_functions import make_all_report_pdfs
 
+### Support Functions ###
+
+def guest_from_internal_ID(internal_ID):
+    '''
+    Looks up guest account based on internal_ID and today's date.
+    '''
+    guest = Guest.objects.filter(internal_ID = internal_ID).values("guest_ID", "tefap_signature_date", "language_preference").first()
+    return guest
+
 ### Views ###
 
 def index(request):
@@ -35,7 +44,7 @@ def lookup_guest(request, guest_ID):
     else:
         last_year = f'{date.today().year - 1}-{date.today().year}'
     guest = Guest.objects.filter(guest_ID = guest_ID).filter(year = last_year).filter(valid = True).values(
-        "guest_ID", "first_name", "last_name", "address", "city", "county", "number_in_household")[0]
+        "guest_ID", "first_name", "last_name", "county", "state", "number_in_household")[0]
     guest_json = {'guests' : guest}
     return JsonResponse(guest_json, safe=True)
 
@@ -51,14 +60,14 @@ def create_new_guest(request, language):
             existing_guests_match = list(Guest.objects.filter(valid = True,
                                                               first_name = form.cleaned_data['first_name'],
                                                               last_name = form.cleaned_data['last_name'],
-                                                              address = form.cleaned_data['address'],
-                                                              city = form.cleaned_data['city'],
+                                                              county = form.cleaned_data['county'],
+                                                              state = form.cleaned_data['state'],
                                                               number_in_household = form.cleaned_data['number_in_household'],
                                                               tefap_signature_date = date.today()).values())
 
             if len(existing_guests_match) > 0:
                 # Non-descript response to prevent someone identifying existing guests by submitting random information.
-                return HttpResponse("This guest could not be processed. Please contact the web administrator (anonymousvolunteer46@gmail.com) for assistance.")
+                return HttpResponse("This guest could not be processed. Please contact the web administrator for assistance.")
 
             # If the "return" statement above isn't thrown, we assume the guest is not a duplicate. 
             # Create a new guest ID if one is not provided manually.
@@ -79,11 +88,9 @@ def create_new_guest(request, language):
                               guest_ID = guest_id,
                               first_name = form.cleaned_data['first_name'],
                               last_name = form.cleaned_data['last_name'],
-                              address = form.cleaned_data['address'],
                               city = form.cleaned_data['city'],
                               county = form.cleaned_data['county'],
-                              phone = form.cleaned_data['phone'],
-                              email = form.cleaned_data['email'],
+                              state = form.cleaned_data['state'],
                               number_in_household = form.cleaned_data['number_in_household'],
                               authorized_representative_1 = form.cleaned_data['authorized_representative_1'],
                               authorized_representative_2 = form.cleaned_data['authorized_representative_2'],
@@ -95,9 +102,9 @@ def create_new_guest(request, language):
             new_guest.save()
             
             if (form.cleaned_data['authorized_representative_1'] == None) and (form.cleaned_data['authorized_representative_2'] == None):
-                return HttpResponseRedirect(reverse('new_guest_created', kwargs = {'guest_ID' : guest_id}))
+                return HttpResponseRedirect(reverse('new_guest_created', kwargs = {'internal_ID' : new_guest.internal_ID}))
             else:
-                return HttpResponseRedirect(reverse('linked_proxy_form', kwargs = {'language' : language, 'internal_ID' : new_guest.internal_ID, 'guest_ID' : guest_id}))
+                return HttpResponseRedirect(reverse('linked_proxy_form', kwargs = {'language' : language, 'internal_ID' : new_guest.internal_ID}))
     else:
         form = GuestInput()
 
@@ -113,7 +120,7 @@ def create_new_guest(request, language):
     
     return render(request, html, context = context)
 
-def linked_proxy_form(request, language, internal_ID, guest_ID):
+def linked_proxy_form(request, language, internal_ID):
     '''
     Abbreviated TEFAP proxy form; imports data from create_new_guest page.
     '''
@@ -129,9 +136,9 @@ def linked_proxy_form(request, language, internal_ID, guest_ID):
             new_linked_proxy.save()
 
             if request.user.is_authenticated:
-                return HttpResponseRedirect(reverse('weekly_signatures', kwargs = {'language' : language, 'guest_ID' : guest_ID}))
+                return HttpResponseRedirect(reverse('weekly_signatures', kwargs = {'language' : language, 'internal_ID' : internal_ID}))
             else:
-                return HttpResponseRedirect(reverse('new_guest_created', kwargs = {'guest_ID' : guest_ID}))
+                return HttpResponseRedirect(reverse('new_guest_created', kwargs = {'internal_ID' : internal_ID}))
     else:
         form = LinkedProxyInput()
 
@@ -144,11 +151,12 @@ def linked_proxy_form(request, language, internal_ID, guest_ID):
     
     return render(request, html, context = context)
 
-def new_guest_created(request, guest_ID):
+def new_guest_created(request, internal_ID):
     '''
     Landing page after a new guest is created and TEFAP form is built. Contains options to proceed to weekly sign-in if 
     user is logged in or return to home page if user is not signed in.
     '''
+    guest_ID = guest_from_internal_ID(internal_ID)['guest_ID']
     context = {'guest_ID' : guest_ID}
     return render(request, 'new_guest_created.html', context = context)
 
@@ -170,9 +178,9 @@ def sign_in(request):
                 candidates = pd.DataFrame(Guest.objects.exclude(internal_ID__in = already_signed_in).filter(
                     guest_ID = search_string).filter(year = current_year).filter(valid = True).values())
                 if candidates.empty:
-                    matches_iter = pd.DataFrame(None, columns = ['first_name', 'last_name', 'guest_ID']).itertuples()
+                    matches_iter = pd.DataFrame(None, columns = ['first_name', 'last_name', 'guest_ID', 'internal_ID']).itertuples()
                 else:
-                    matches_iter = candidates[['first_name', 'last_name', 'guest_ID']].itertuples()
+                    matches_iter = candidates[['first_name', 'last_name', 'guest_ID', 'internal_ID']].itertuples()
                 
             except:
                 candidates = pd.DataFrame(Guest.objects.exclude(internal_ID__in = already_signed_in).filter(
@@ -184,7 +192,7 @@ def sign_in(request):
                                                limit = 20)          
                 
                 matches = candidates[names.isin(list(dict(fuzzy_search).keys()))]
-                matches_iter = matches[['first_name', 'last_name', 'guest_ID']].itertuples()
+                matches_iter = matches[['first_name', 'last_name', 'guest_ID', 'internal_ID']].itertuples()
                 
             context = {'searchbar' : form,
                        'guests' : matches_iter}
@@ -196,13 +204,13 @@ def sign_in(request):
     return render(request, 'sign_in.html', context = context)
 
 @login_required
-def weekly_signatures(request, language, guest_ID):
+def weekly_signatures(request, language, internal_ID):
     '''
     Equivalent to signing the back of a TEFAP form.
     '''
     current_year = f'{date.today().year - 1}-{date.today().year}' if (date.today().month < 10) else f'{date.today().year}-{date.today().year + 1}'
-    guest = Guest.objects.filter(year = current_year).filter(valid = True).get(guest_ID = guest_ID)
-    unlinkedProxy = UnlinkedProxy.objects.filter(internal_ID = guest.internal_ID)
+    guest = Guest.objects.get(internal_ID = internal_ID)
+    unlinkedProxy = UnlinkedProxy.objects.filter(internal_ID = internal_ID)
     
     pickup_choices = [(f'{guest.first_name} {guest.last_name}', f'{guest.first_name} {guest.last_name}')]
 
@@ -231,10 +239,10 @@ def weekly_signatures(request, language, guest_ID):
             # Sanity check to ensure someone doesn't sign in the same guest twice. 
             # No one with the same {internal_ID_id} should sign in twice in one day.
             today_sign_ins_match = list(SignIn.objects.filter(date = date.today(), 
-                                                              internal_ID_id = guest.internal_ID).values())
+                                                              internal_ID_id = internal_ID).values())
             if len(today_sign_ins_match) > 0:
                 eligible = today_sign_ins_match[0]['tefap_eligible']
-                return HttpResponseRedirect(reverse('submission_complete', kwargs = {'tefap_flag' : eligible, 'guest_ID' : guest_ID}))
+                return HttpResponseRedirect(reverse('submission_complete', kwargs = {'tefap_flag' : eligible, 'internal_ID' : internal_ID}))
             
             # If the HTTPResponseRedirect above is not thrown, we assume the guest has not been signed in yet.
             
@@ -298,7 +306,7 @@ def weekly_signatures(request, language, guest_ID):
                                  tefap_eligible = eligible,
                                  agency_representative_signature = form.cleaned_data['agency_representative_signature'])
             new_sign_in.save()
-            return HttpResponseRedirect(reverse('submission_complete', kwargs = {'tefap_flag' : eligible, 'guest_ID' : guest_ID}))
+            return HttpResponseRedirect(reverse('submission_complete', kwargs = {'tefap_flag' : eligible, 'internal_ID' : internal_ID}))
         
     else:
         form = SignInInput(initial = {'previously_reported_number_in_household' : guest.number_in_household})
@@ -316,7 +324,7 @@ def weekly_signatures(request, language, guest_ID):
     return render(request, html, context = context)
 
 @login_required    
-def submission_complete(request, tefap_flag, guest_ID): 
+def submission_complete(request, tefap_flag, internal_ID): 
     if tefap_flag == 'Yes':
         flag_english = 'eligible'
         instructions_english = 'Please proceed through the line as normal.'
@@ -328,6 +336,7 @@ def submission_complete(request, tefap_flag, guest_ID):
         flag_spanish = 'no elegible'
         instructions_spanish = '¡Aún nos aseguraremos de que recibas comida! Hable con uno de los miembros de nuestro personal y le prepararemos una bolsa de comida.'
     
+    guest_ID = guest_from_internal_ID(internal_ID)['guest_ID']
     context = {'flag_english' : flag_english,
                'instructions_english' : instructions_english,
                'flag_spanish' : flag_spanish,
@@ -339,7 +348,7 @@ def submission_complete(request, tefap_flag, guest_ID):
 @login_required
 def sign_out(request):
     '''
-    Sign out a guest that was checked in within the last day.
+    Go to the Django admin page. Here, you can sign out guests and edit accounts' metadata.
     '''
     return HttpResponseRedirect(reverse('admin:index'))
 
@@ -355,9 +364,9 @@ def unlinked_proxy_form(request):
             new_unlinked_proxy = UnlinkedProxy(valid = True,
                                                first_name = form.cleaned_data['first_name'],
                                                last_name = form.cleaned_data['last_name'],
-                                               address = form.cleaned_data['address'],
                                                city = form.cleaned_data['city'],
                                                county = form.cleaned_data['county'],
+                                               state = form.cleaned_data['state'],
                                                number_in_household = form.cleaned_data['number_in_household'],
                                                fns = form.cleaned_data['fns'],
                                                monthly_income = form.cleaned_data['monthly_income'],
@@ -524,3 +533,4 @@ def generate_attendance_report(request):
 		html_data.append({'date' : f'{week.strftime("%m-%d-%Y")}', 'category' : 'Total', 'head_count' : s['total_count'], 'total_people_served' : s['total_sum']})
 
 	return render(request, 'generate_attendance_report.html', context = {'html_data' : html_data})
+
